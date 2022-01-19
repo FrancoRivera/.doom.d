@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: HN article
+# key: hn
+# --
+
+$1 [link]($2)$0

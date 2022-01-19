@@ -1,0 +1,57 @@
+# -*- mode: snippet -*-
+# name: Advent of Code Lisp Body
+# key: aoc
+# --
+
+; Started: `(format-time-string "%Y-%m-%d @ %k:%l:%M")`
+
+; Dependencies
+(load "~/quicklisp/setup.lisp")
+(ql:quickload "cl-ppcre")
+
+(defun get-file (filename)
+  (with-open-file (stream filename)
+	 (loop for line = (read-line stream nil)
+			 while line
+			 collect line)))
+
+; Helpers
+
+
+; Problem definition
+
+$0
+
+; Implementation
+
+; Parsing...
+
+(defparameter +DAY+ `(format-time-string "%d")`)
+
+(defun parse-file (file-name)
+	(let ((lines-read '0))
+	 (loop for line in (get-file (concat +DAY+ "-" file-name ".txt"))
+		do
+		(loop for char in (ppcre:split "" line)
+			do (format t "~D" char))
+		(incf lines-read))))
+
+
+
+; (parse-file "test-input") ;uncomment to parse test
+; (parse-file "input")      ;uncomment to parse real input
+
+
+;; Part 1
+
+(defun first-part-solution ()
+       (format t "First part solution is: ~D ~%" "Answer"))
+
+;; Part 2
+(defun second-part-solution ()
+       (format t "First part solution is: ~D ~%" "Answer"))
+
+
+;; Run solutions
+(first-part-solution)
+(second-part-solution)
