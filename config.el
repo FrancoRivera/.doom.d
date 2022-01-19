@@ -1,24 +1,11 @@
+;; [[file:config.org::*Identification][Identification:1]]
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-;; Place your private configuration here! Remember, you do not need to run 'doom
-;; sync' after modifying this file!
-
-;; Some functionality uses this to identify you, e.g. GPG configuration, email
-;; clients, file templates and snippets.
 (setq user-full-name "Franco"
       user-mail-address "franco@wemake.pe")
+;; Identification:1 ends here
 
-;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
-;; are the three important ones:
-;;
-;; + `doom-font'
-;; + `doom-variable-pitch-font'
-;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
-;;   presentations or streaming.
-;;
-;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
-;; font string. You generally only need these two:
-;;
+;; [[file:config.org::*Font][Font:1]]
 (setq doom-font (font-spec :family "Iosevka SS01" :size 16 :weight 'regular)
        doom-variable-pitch-font (font-spec :family "Inconsolata" :size 16))
 
@@ -36,14 +23,48 @@
 ;; (custom-set-faces!
 ;;   '(font-lock-comment-face :slant italic)
 ;;   '(font-lock-keyword-face :slant italic))
+;; Font:1 ends here
 
-;; There are two ways to load a theme. Both assume the theme is installed and
-;; available. You can either set `doom-theme' or manually load a theme with the
-;; `load-theme' function. This is the default:
+;; [[file:config.org::*Themes][Themes:1]]
 (setq doom-theme 'doom-one)
 
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
+;; (custom-theme-set-faces
+;;  'doom-one
+;;  '(font-lock-comment-face ((t (:foreground "#DADADA"))))
+;;  '(font-lock-comment-delimiter-face ((t (:foreground "#DFAF8F")))))
+
+(use-package doom-themes
+  :custom-face ; for solarized light
+  (font-lock-comment-face ((t (:foreground "#ff0077"))))        ; bright magenta
+  ; (font-lock-comment-face ((t (:foreground "#4bf13c"))))         ; bright green for dark mode
+  ;(font-lock-constant-face      ((t (:foreground "#2aa198"))))                       ; solarized cyan
+  ;(highlight-numbers-number     ((t (:foreground "#2aa198"))))                       ; solarized cyan
+  ;(diff-hl-change               ((t (:background "#2aa198" :foreground "#2aa198")))) ; solarized cyan
+  ;(show-paren-match             ((t (:foreground "white" :background "#174652"))))
+  ;; (highlight-symbol-face        ((t (:background "#073642")))) ; region (base0)
+
+  ;; (doom-font (font-spec :family "Iosevka SS01" :size 20 :weight 'regular))
+  ;; (doom-variable-pitch-font (font-spec :family "Inconsolata" :size 11))
+  :config
+  ;(load-theme 'doom-solarized-light t))
+  (load-theme 'doom-dracula t))
+;; Themes:1 ends here
+
+;; [[file:config.org::*Editor style][Editor style:1]]
+;; This determines the style of line numbers in effect. If set to `nil', line
+;; numbers are disabled. For relative line numbers, set this to `relative'.
+(setq display-line-numbers-type t)
+(setq fill-column '80)
+(setq global-display-fill-column-indicator t)
+(setq display-fill-column-indicator t)
+(setq display-fill-column-indicator-character ?\u254E)
+;; Editor style:1 ends here
+
+;; [[file:config.org::*Mac specific][Mac specific:1]]
+(setq mac-option-modifier 'meta)
+;; Mac specific:1 ends here
+
+;; [[file:config.org::*Org][Org:1]]
 (setq org-directory "~/org/")
 (setq org-agenda-files "~/org/agenda.org")
 
@@ -54,61 +75,6 @@
 
         (add-to-list 'org-src-lang-modes '("swiftui" . swift)) ; Syntax highlighting Swift UI
 )
-
-;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
-
-
-;; Here are some additional functions/macros that could help you configure Doom:
-;;
-;; - `load!' for loading external *.el files relative to this one
-;; - `use-package!' for configuring packages
-;; - `after!' for running code after a package has loaded
-;; - `add-load-path!' for adding directories to the `load-path', relative to
-;;   this file. Emacs searches the `load-path' when you load packages with
-;;   `require' or `use-package'.
-;; - `map!' for binding new keys
-;;
-;; To get information about any of these functions/macros, move the cursor over
-;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
-;; This will open documentation for it, including demos of how they are used.
-;;
-;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
-;; they are implemented.
-
-(setq mac-option-modifier 'meta)
-
-(setq projectile-project-search-path '("~/repos/" "~/org"))
-
-;; (use-package parinfer-rust-mode
-;;    :hook emacs-lisp-mode
-;;    :init
-;;    (setq parinfer-rust-library "~/.emacs.d/parinfer-rust/parinfer-rust-darwin.so"))
-;;
-
-
- (setq path-to-ctags "/usr/bin/ctags") ;; <- your ctags path here
-
- (defun create-tags (dir-name)
-    "Create tags file."
-    (interactive "DDirectory: ")
-    (shell-command
-     (format "%s -f TAGS -e -R %s" path-to-ctags (directory-file-name dir-name)))
-  )
-
-(add-hook 'markdown-mode-hook 'pandoc-mode)
-
-;; (use-package! yasnippet
-;;   :config
-;;  ;  (setq yas-snippet-dirs '("~/.doom.d/snippets"))
-;;   (setq yas-indent-line 'fixed) ; avoid weird auto indent by default that messes up snippets tbh
-;;   (add-hook 'yas-minor-mode-hook (lambda ()
-;;                                    (yas-activate-extra-mode 'fundamental-mode)))
-;;   (yas-global-mode 1))
-;;
-
-(setq org-pandoc-options '((toc . t)))
 
 (setq org-title-palette '("#ef476f" "#ffd166" "#06d6a0" "#118ab2" "#073b4c"))
 ;(setq org-title-palette '("#264653" "#2a9d8f" "#f4a261" "#e76f51" "#264653"))
@@ -188,51 +154,8 @@
 ;;                         '(("^ *\\([-]\\) "
 ;;                         (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
-(defun what-face (pos)
-  (interactive "d")
-  (let ((face (or (get-char-property pos 'read-face-name)
-                  (get-char-property pos 'face))))
-    (if face (message "Face: %s" face) (message "No face at %d" pos))))
-
-(defun what-face (pos)
-    (interactive "d")
-        (let ((face (or (get-char-property (point) 'read-face-name)
-            (get-char-property (point) 'face))))
-    (if face (message "Face: %s" face) (message "No face at %d" pos))))
-
-(defun what-faces (pos)
-  "Get the font faces at POS."
-  (remq nil
-        (list
-         (get-char-property pos 'read-face-name)
-         (get-char-property pos 'face)
-         (plist-get (text-properties-at pos) 'face))))
 
 (setq org-image-actual-width (list 550))
-
-;; (map! :leader
-;;       (:prefix ("e" . "exports")
-;;       :desc "Export org to PDF via latex with pandoc"
-;;       "" #'org-pandoc-export-to-latex-pdf))
-
-(map! :leader
-      :desc "Export org to PDF via latex with pandoc"
-      "e" #'org-pandoc-export-to-latex-pdf)
-
-;; (setq org-pandoc-options-for-latex '((template . "/Users/francorivera/repos/12-handbook/src/template.tex")))
-(setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
-                                         (template . "/Users/francorivera/repos/12-handbook/src/template.tex")))
-
-(map! :leader
-      :desc "Open current dir in VSCode"
-      "o c" #'org-pandoc-export-to-latex-pdf)
-
-(setq fill-column '80)
-(setq global-display-fill-column-indicator t)
-(setq display-fill-column-indicator t)
-(setq display-fill-column-indicator-character ?\u254E)
-
-(setq ob-mermaid-cli-path "/opt/homebrew/bin/mmdc")
 
 (setq-default prettify-symbols-alist '(("#+BEGIN_SRC" . "➤")
                                        ("#+END_SRC" . "❰")
@@ -240,6 +163,7 @@
                                        ("#+end_src" . "❰")
                                        (">=" . "≥")
                                        ("=>" . "⇨")))
+
 (setq prettify-symbols-unprettify-at-point 'right-edge)
 
 (add-hook 'org-mode-hook 'prettify-symbols-mode)
@@ -284,7 +208,211 @@
          (setq org-ellipsis "↴");; ⤵ ≫
 ;;   )
 
+(map! :leader
+      :desc "Remove results"
+      "c c" #'org-babel-remove-result-one-or-many)
+;; Org:1 ends here
 
+;; [[file:config.org::*ORG Roam/UI][ORG Roam/UI:1]]
+; Roam UI
+
+(map! :leader
+      :desc "Capture today"
+      "n t" #'org-roam-dailies-capture-today)
+
+(use-package! websocket
+    :after org-roam)
+
+(use-package! org-roam-ui
+    :after org-roam
+    :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+;; ORG Roam/UI:1 ends here
+
+;; [[file:config.org::*Org Agenda][Org Agenda:1]]
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-agenda-files
+   '("/Users/francorivera/org/agenda.org" "/Users/francorivera/org/journal.org" "/Users/francorivera/org/notes.org" "/Users/francorivera/org/notion-articles-ts.org" "/Users/francorivera/org/notion-articles-ts2.org" "/Users/francorivera/org/notion-articles.org")))
+;; Org Agenda:1 ends here
+
+;; [[file:config.org::*Org Roam][Org Roam:1]]
+(use-package org-roam
+  :ensure t
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory "~/roam")
+  (org-roam-completion-everywhere t)
+  (org-roam-dailies-directory "journal/")
+  (org-roam-dailies-capture-templates
+   '(
+     ("d" "default" entry "* %<%I:%M %p>: %?"
+       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))
+     ("h" "Hckr news reading" entry "* %<%I:%M %p>: HN Reading\n %?"
+       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+  (org-roam-capture-templates
+   '(("d" "default" plain
+      "%?"
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n") :unnarrowed t)
+
+     ;; Example used to illustrate how to create a template
+     ("l" ; letter to be used for capture template
+      ;; title for capture template
+      "programming language"
+      ;; idk why but its always plain
+      plain
+      ;; body of the capture template, this can also be placed in an org file
+      "* Characteristics\n\n- Family: %?\n- Inspired by: \n\n* Reference:\n\n"
+      ;; Setup for new files, you can change this to modify the name of the file created on disk.
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+      ;; always set to unnarrowed some meme about roam v2
+      :unnarrowed t)
+
+     ("b" "book notes" plain
+      (file "~/roam/Templates/BookNoteTemplate.org")
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+      :unnarrowed t)
+
+     ("p" "project" plain
+      "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
+      :unnarrowed t)
+
+     ("s" "Software" plain
+      (file "~/roam/Templates/SoftwareTemplate.org")
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n #+filetags: :software: \n")
+      :unnarrowed t)
+     ))
+
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert)
+         ("C-c n I" . org-roam-node-insert-immediate)
+         :map org-mode-map
+         ("C-M-i"    . completion-at-point)
+         :map org-roam-dailies-map
+         ("Y" . org-roam-dailies-capture-yesterday)
+         ("T" . org-roam-dailies-capture-tomorrow))
+  :bind-keymap
+  ("C-c n d" . org-roam-dailies-map)
+  :config
+  (require 'org-roam-dailies) ;; Ensure the keymap is available
+  :config
+  (org-roam-setup))
+
+;; Bind this to C-c n I
+(defun org-roam-node-insert-immediate (arg &rest args)
+  (interactive "P")
+  (let ((args (cons arg args))
+        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                  '(:immediate-finish t)))))
+    (apply #'org-roam-node-insert args)))
+;; Org Roam:1 ends here
+
+;; [[file:config.org::*Org Tree Slide (Presentations)][Org Tree Slide (Presentations):1]]
+(use-package hide-mode-line)
+
+(defun efs/presentation-setup ()
+  ;; Hide the mode line
+  (hide-mode-line-mode 1)
+
+  ;; Display images inline
+  (org-display-inline-images) ;; Can also use org-startup-with-inline-images
+
+  ; remote line numbers
+  (setq display-line-numbers-type nil)
+  ;; Scale the text.  The next line is for basic scaling:
+  (setq text-scale-mode-amount 5)
+  ;; (text-scale-mode 1)
+  )
+
+  ;; This option is more advanced, allows you to scale other faces too
+  ;; (setq-local face-remapping-alist '((default (:height 2.0) variable-pitch)
+  ;;                                    (org-verbatim (:height 1.75) org-verbatim)
+  ;;                                    (org-block (:height 1.25) org-block))))
+
+(defun efs/presentation-end ()
+  ;; Show the mode line again
+  (hide-mode-line-mode 0)
+
+  (setq display-line-numbers-type t)
+
+  ;; Turn off text scale mode (or use the next line if you didn't use text-scale-mode)
+  ;; (text-scale-mode 0)
+
+  ;; If you use face-remapping-alist, this clears the scaling:
+  (setq-local face-remapping-alist '((default variable-pitch default))))
+
+(use-package org-tree-slide
+  :hook ((org-tree-slide-play . efs/presentation-setup)
+         (org-tree-slide-stop . efs/presentation-end))
+  :custom
+  (org-tree-slide-slide-in-effect nil)
+  (org-tree-slide-activate-message "Presentation started!")
+  (org-tree-slide-deactivate-message "Presentation finished!")
+  (org-tree-slide-header t)
+  (org-tree-slide-breadcrumbs " > ")
+
+  (org-image-actual-width nil))
+
+(when (require 'org-tree-slide nil t)
+  (global-set-key (kbd "<f8>") 'org-tree-slide-mode)
+  (global-set-key (kbd "S-<f8>") 'org-tree-slide-skip-done-toggle)
+  (define-key org-tree-slide-mode-map (kbd "<f5>")
+    'org-tree-slide-move-previous-tree)
+  (define-key org-tree-slide-mode-map (kbd "<f6>")
+    'org-tree-slide-move-next-tree)
+  (define-key org-tree-slide-mode-map (kbd "<f7>")
+    'org-tree-slide-content)
+  (setq org-tree-slide-skip-outline-level 4)
+  (org-tree-slide-narrowing-control-profile)
+  (setq org-tree-slide-skip-done nil))
+;; Org Tree Slide (Presentations):1 ends here
+
+;; [[file:config.org::*Helpers for fonts][Helpers for fonts:1]]
+; u must disable hl line mode
+(defun what-face (pos)
+  (interactive "d")
+  (let ((face (or (get-char-property pos 'read-face-name)
+                  (get-char-property pos 'face))))
+    (if face (message "Face: %s" face) (message "No face at %d" pos))))
+;; Helpers for fonts:1 ends here
+
+;; [[file:config.org::*Projectile][Projectile:1]]
+(setq projectile-project-search-path '("~/repos/" "~/org"))
+;; Projectile:1 ends here
+
+;; [[file:config.org::*Pandoc][Pandoc:1]]
+(add-hook 'markdown-mode-hook 'pandoc-mode)
+(setq org-pandoc-options '((toc . t)))
+
+;; (map! :leader
+;;       (:prefix ("e" . "exports")
+;;       :desc "Export org to PDF via latex with pandoc"
+;;       "" #'org-pandoc-export-to-latex-pdf))
+
+(map! :leader
+      :desc "Export org to PDF via latex with pandoc"
+      "e" #'org-pandoc-export-to-latex-pdf)
+
+;; (setq org-pandoc-options-for-latex '((template . "/Users/francorivera/repos/12-handbook/src/template.tex")))
+(setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
+                                         (template . "/Users/francorivera/repos/12-handbook/src/template.tex")))
+;; Pandoc:1 ends here
+
+;; [[file:config.org::*Mermaid][Mermaid:1]]
+(setq ob-mermaid-cli-path "/opt/homebrew/bin/mmdc")
+;; Mermaid:1 ends here
+
+;; [[file:config.org::*SVG Tag mode][SVG Tag mode:1]]
 (require 'svg-tag-mode)
 
 (defconst date-re "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}")
@@ -376,25 +504,26 @@
 ;; Inactive date: [2021-12-24]
 ;;                [2021-12-24 14:00]
 ;; Citation:      [cite:@Knuth:1984]
+;; SVG Tag mode:1 ends here
 
-
-; -------
-;
-
+;; [[file:config.org::*String replacer][String replacer:1]]
 (load-file "~/repos/string-replacer-mode/string-replacer-mode.el")
 
 (setq string-replacer--meme-replace-string "⎓")
 (setq string-replacer--font-height 1.0)
 (setq string-replacer--font-width  2.0)
 (global-string-replacer-mode t)
+; -------
+;
+;; String replacer:1 ends here
 
-(map! :leader
-      :desc "Capture today"
-      "n t" #'org-roam-dailies-capture-today)
+;; [[file:config.org::*ESS (Emacs speaks statistics)][ESS (Emacs speaks statistics):1]]
+(use-package ess
+  :ensure t
+)
+;; ESS (Emacs speaks statistics):1 ends here
 
-
-;; FLUTTER
-
+;; [[file:config.org::*Flutter][Flutter:1]]
 (map! :leader
       :desc "Hot reload"
       "r" #'flutter-hot-reload)
@@ -428,35 +557,13 @@
       lsp-signature-auto-activate nil)
 
 ;; End of flutter
+;; Flutter:1 ends here
 
-; Roam UI
-
-(use-package! websocket
-    :after org-roam)
-
-(use-package! org-roam-ui
-    :after org-roam
-    :hook (after-init . org-roam-ui-mode)
-    :config
-    (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
-
-; (magit-log-margin-width)
-; (setq magit-log-margin--custom-type (t "%Y-%m-%d %H:%M " magit-log-margin-width t 18))
-
-; Grab links automatically
-; Not necesary as Doom has SPC M L C
-;; (add-hook 'org-mode-hook (lambda ()
-;;   (define-key org-mode-map (kbd "C-c g") 'org-mac-grab-link)))
-;;
+;; [[file:config.org::*Go][Go:1]]
 (add-hook 'before-save-hook 'gofmt-before-save)
+;; Go:1 ends here
 
-(map! :leader
-      :desc "Open current dir in VSCode"
-      "c c" #'org-babel-remove-result-one-or-many)
-
+;; [[file:config.org::*Swift/SwiftUI][Swift/SwiftUI:1]]
 (defun ob-swiftui--expand-body (body params)
   "Expand BODY according to PARAMS and PROCESSED-PARAMS, return the expanded body."
   (let ((write-to-file (member "file" (map-elt params :result-params)))
@@ -548,3 +655,39 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
      (if root-view
          body
        ""))))
+;; Swift/SwiftUI:1 ends here
+
+;; [[file:config.org::*Other/Not used][Other/Not used:1]]
+    ; (magit-log-margin-width)
+    ; (setq magit-log-margin--custom-type (t "%Y-%m-%d %H:%M " magit-log-margin-width t 18))
+;; Other/Not used:1 ends here
+
+;; [[file:config.org::*Parinfer (not used)][Parinfer (not used):1]]
+;; (use-package parinfer-rust-mode
+;;    :hook emacs-lisp-mode
+;;    :init
+;;    (setq parinfer-rust-library "~/.emacs.d/parinfer-rust/parinfer-rust-darwin.so"))
+;;
+;; Parinfer (not used):1 ends here
+
+;; [[file:config.org::*CTags (not used)][CTags (not used):1]]
+ (setq path-to-ctags "/usr/bin/ctags") ;; <- your ctags path here
+
+ (defun create-tags (dir-name)
+    "Create tags file."
+    (interactive "DDirectory: ")
+    (shell-command
+     (format "%s -f TAGS -e -R %s" path-to-ctags (directory-file-name dir-name)))
+  )
+;; CTags (not used):1 ends here
+
+;; [[file:config.org::*Yasnippet (Not used)][Yasnippet (Not used):1]]
+;; (use-package! yasnippet
+;;   :config
+;;  ;  (setq yas-snippet-dirs '("~/.doom.d/snippets"))
+;;   (setq yas-indent-line 'fixed) ; avoid weird auto indent by default that messes up snippets tbh
+;;   (add-hook 'yas-minor-mode-hook (lambda ()
+;;                                    (yas-activate-extra-mode 'fundamental-mode)))
+;;   (yas-global-mode 1))
+;;
+;; Yasnippet (Not used):1 ends here

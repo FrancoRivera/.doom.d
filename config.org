@@ -1,5 +1,8 @@
 #+TITLE: Config
-#+PROPERTY: header-args :tangle config-2.el
+#+PROPERTY: header-args :tangle config.el :comments link
+
+After changing something, go to title and C-c C-c, then run "org-babel-config" and then SPC h r r
+
 * Table of Contents :toc:
 - [[#identification][Identification]]
 - [[#font][Font]]
@@ -8,6 +11,9 @@
 - [[#mac-specific][Mac specific]]
 - [[#org][Org]]
   - [[#org-roamui][ORG Roam/UI]]
+  - [[#org-agenda][Org Agenda]]
+  - [[#org-roam][Org Roam]]
+  - [[#org-tree-slide-presentations][Org Tree Slide (Presentations)]]
 - [[#helpers-for-fonts][Helpers for fonts]]
 - [[#packages][Packages]]
   - [[#projectile][Projectile]]
@@ -15,6 +21,7 @@
   - [[#mermaid][Mermaid]]
   - [[#svg-tag-mode][SVG Tag mode]]
   - [[#string-replacer][String replacer]]
+  - [[#ess-emacs-speaks-statistics][ESS (Emacs speaks statistics)]]
 - [[#language-configs][Language-configs]]
   - [[#flutter][Flutter]]
   - [[#go][Go]]
@@ -72,12 +79,38 @@ Note: This also includes the "lexical binding", which i dont really know what it
 ;;   '(font-lock-comment-face :slant italic)
 ;;   '(font-lock-keyword-face :slant italic))
 #+end_src
+
+#+RESULTS:
+: t
+
 * Themes
 There are two ways to load a theme. Both assume the theme is installed and
 available. You can either set `doom-theme' or manually load a theme with the
 `load-theme' function. This is the default:
 #+begin_src emacs-lisp
 (setq doom-theme 'doom-one)
+
+;; (custom-theme-set-faces
+;;  'doom-one
+;;  '(font-lock-comment-face ((t (:foreground "#DADADA"))))
+;;  '(font-lock-comment-delimiter-face ((t (:foreground "#DFAF8F")))))
+
+(use-package doom-themes
+  :custom-face ; for solarized light
+  (font-lock-comment-face ((t (:foreground "#ff0077"))))        ; bright magenta
+  ; (font-lock-comment-face ((t (:foreground "#4bf13c"))))         ; bright green for dark mode
+  ;(font-lock-constant-face      ((t (:foreground "#2aa198"))))                       ; solarized cyan
+  ;(highlight-numbers-number     ((t (:foreground "#2aa198"))))                       ; solarized cyan
+  ;(diff-hl-change               ((t (:background "#2aa198" :foreground "#2aa198")))) ; solarized cyan
+  ;(show-paren-match             ((t (:foreground "white" :background "#174652"))))
+  ;; (highlight-symbol-face        ((t (:background "#073642")))) ; region (base0)
+
+  ;; (doom-font (font-spec :family "Iosevka SS01" :size 20 :weight 'regular))
+  ;; (doom-variable-pitch-font (font-spec :family "Inconsolata" :size 11))
+  :config
+  ;(load-theme 'doom-solarized-light t))
+  (load-theme 'doom-dracula t))
+
 #+end_src
 
 * Editor style
@@ -247,8 +280,10 @@ change `org-directory'. It must be set before org loads!
 (map! :leader
       :desc "Remove results"
       "c c" #'org-babel-remove-result-one-or-many)
-
 #+end_src
+
+#+RESULTS:
+: org-babel-remove-result-one-or-many
 
 ** ORG Roam/UI
 #+begin_src emacs-lisp
@@ -271,6 +306,159 @@ change `org-directory'. It must be set before org loads!
           org-roam-ui-open-on-start t))
 
 #+end_src
+
+** Org Agenda
+#+begin_src emacs-lisp
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-agenda-files
+   '("/Users/francorivera/org/agenda.org" "/Users/francorivera/org/journal.org" "/Users/francorivera/org/notes.org" "/Users/francorivera/org/notion-articles-ts.org" "/Users/francorivera/org/notion-articles-ts2.org" "/Users/francorivera/org/notion-articles.org")))
+#+end_src
+
+** Org Roam
+#+begin_src emacs-lisp
+(use-package org-roam
+  :ensure t
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory "~/roam")
+  (org-roam-completion-everywhere t)
+  (org-roam-dailies-directory "journal/")
+  (org-roam-dailies-capture-templates
+   '(
+     ("d" "default" entry "* %<%I:%M %p>: %?"
+       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))
+     ("h" "Hckr news reading" entry "* %<%I:%M %p>: HN Reading\n %?"
+       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+  (org-roam-capture-templates
+   '(("d" "default" plain
+      "%?"
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n") :unnarrowed t)
+
+     ;; Example used to illustrate how to create a template
+     ("l" ; letter to be used for capture template
+      ;; title for capture template
+      "programming language"
+      ;; idk why but its always plain
+      plain
+      ;; body of the capture template, this can also be placed in an org file
+      "* Characteristics\n\n- Family: %?\n- Inspired by: \n\n* Reference:\n\n"
+      ;; Setup for new files, you can change this to modify the name of the file created on disk.
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+      ;; always set to unnarrowed some meme about roam v2
+      :unnarrowed t)
+
+     ("b" "book notes" plain
+      (file "~/roam/Templates/BookNoteTemplate.org")
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+      :unnarrowed t)
+
+     ("p" "project" plain
+      "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
+      :unnarrowed t)
+
+     ("s" "Software" plain
+      (file "~/roam/Templates/SoftwareTemplate.org")
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n #+filetags: :software: \n")
+      :unnarrowed t)
+     ))
+
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert)
+         ("C-c n I" . org-roam-node-insert-immediate)
+         :map org-mode-map
+         ("C-M-i"    . completion-at-point)
+         :map org-roam-dailies-map
+         ("Y" . org-roam-dailies-capture-yesterday)
+         ("T" . org-roam-dailies-capture-tomorrow))
+  :bind-keymap
+  ("C-c n d" . org-roam-dailies-map)
+  :config
+  (require 'org-roam-dailies) ;; Ensure the keymap is available
+  :config
+  (org-roam-setup))
+
+;; Bind this to C-c n I
+(defun org-roam-node-insert-immediate (arg &rest args)
+  (interactive "P")
+  (let ((args (cons arg args))
+        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                  '(:immediate-finish t)))))
+    (apply #'org-roam-node-insert args)))
+
+#+end_src
+
+** Org Tree Slide (Presentations)
+Hide mode line is something to emulate a presentation
+#+begin_src emacs-lisp
+(use-package hide-mode-line)
+
+(defun efs/presentation-setup ()
+  ;; Hide the mode line
+  (hide-mode-line-mode 1)
+
+  ;; Display images inline
+  (org-display-inline-images) ;; Can also use org-startup-with-inline-images
+
+  ; remote line numbers
+  (setq display-line-numbers-type nil)
+  ;; Scale the text.  The next line is for basic scaling:
+  (setq text-scale-mode-amount 5)
+  ;; (text-scale-mode 1)
+  )
+
+  ;; This option is more advanced, allows you to scale other faces too
+  ;; (setq-local face-remapping-alist '((default (:height 2.0) variable-pitch)
+  ;;                                    (org-verbatim (:height 1.75) org-verbatim)
+  ;;                                    (org-block (:height 1.25) org-block))))
+
+(defun efs/presentation-end ()
+  ;; Show the mode line again
+  (hide-mode-line-mode 0)
+
+  (setq display-line-numbers-type t)
+
+  ;; Turn off text scale mode (or use the next line if you didn't use text-scale-mode)
+  ;; (text-scale-mode 0)
+
+  ;; If you use face-remapping-alist, this clears the scaling:
+  (setq-local face-remapping-alist '((default variable-pitch default))))
+
+(use-package org-tree-slide
+  :hook ((org-tree-slide-play . efs/presentation-setup)
+         (org-tree-slide-stop . efs/presentation-end))
+  :custom
+  (org-tree-slide-slide-in-effect nil)
+  (org-tree-slide-activate-message "Presentation started!")
+  (org-tree-slide-deactivate-message "Presentation finished!")
+  (org-tree-slide-header t)
+  (org-tree-slide-breadcrumbs " > ")
+
+  (org-image-actual-width nil))
+
+(when (require 'org-tree-slide nil t)
+  (global-set-key (kbd "<f8>") 'org-tree-slide-mode)
+  (global-set-key (kbd "S-<f8>") 'org-tree-slide-skip-done-toggle)
+  (define-key org-tree-slide-mode-map (kbd "<f5>")
+    'org-tree-slide-move-previous-tree)
+  (define-key org-tree-slide-mode-map (kbd "<f6>")
+    'org-tree-slide-move-next-tree)
+  (define-key org-tree-slide-mode-map (kbd "<f7>")
+    'org-tree-slide-content)
+  (setq org-tree-slide-skip-outline-level 4)
+  (org-tree-slide-narrowing-control-profile)
+  (setq org-tree-slide-skip-done nil))
+#+end_src
+
+#+RESULTS:
+
+
 * Helpers for fonts
 
 #+begin_src emacs-lisp
@@ -418,6 +606,13 @@ change `org-directory'. It must be set before org loads!
 (global-string-replacer-mode t)
 ; -------
 ;
+#+end_src
+
+** ESS (Emacs speaks statistics)
+#+begin_src emacs-lisp
+(use-package ess
+  :ensure t
+)
 #+end_src
 
 * Language-configs
@@ -598,3 +793,5 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
 ;;   (yas-global-mode 1))
 ;;
 #+end_src
+
+
