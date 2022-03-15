@@ -80,3 +80,4 @@
 (package! ob-swiftui)  ; https://xenodium.com/previewing-swiftui-layouts-in-emacs-revisited/
 (package! org-padding
   :recipe (:host github :repo "TonCherAmi/org-padding"))
+(package! vue-mode)

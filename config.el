@@ -35,12 +35,12 @@
 
 (use-package doom-themes
   :custom-face ; for solarized light
+  ; #4bf13c ; bright green (dark mode)
   (font-lock-comment-face ((t (:foreground "#ff0077"))))        ; bright magenta
-  ; (font-lock-comment-face ((t (:foreground "#4bf13c"))))         ; bright green for dark mode
-  ;(font-lock-constant-face      ((t (:foreground "#2aa198"))))                       ; solarized cyan
+  (font-lock-constant-face      ((t (:foreground "#2aa198"))))                       ; solarized cyan
   ;(highlight-numbers-number     ((t (:foreground "#2aa198"))))                       ; solarized cyan
   ;(diff-hl-change               ((t (:background "#2aa198" :foreground "#2aa198")))) ; solarized cyan
-  ;(show-paren-match             ((t (:foreground "white" :background "#174652"))))
+  (show-paren-match             ((t (:foreground "white" :background "#174652"))))
   ;; (highlight-symbol-face        ((t (:background "#073642")))) ; region (base0)
 
   ;; (doom-font (font-spec :family "Iosevka SS01" :size 20 :weight 'regular))
@@ -51,8 +51,6 @@
 ;; Themes:1 ends here
 
 ;; [[file:config.org::*Editor style][Editor style:1]]
-;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
 (setq fill-column '80)
 (setq global-display-fill-column-indicator t)
@@ -60,24 +58,28 @@
 (setq display-fill-column-indicator-character ?\u254E)
 ;; Editor style:1 ends here
 
-;; [[file:config.org::*Mac specific][Mac specific:1]]
+;; [[file:config.org::*MacOS specific][MacOS specific:1]]
 (setq mac-option-modifier 'meta)
-;; Mac specific:1 ends here
+(setq mac-command-key-is-meta nil)
+(setq mac-command-modifier 'super)
+(setq mac-option-key-is-meta t)
+(setq mac-option-modifier t)
+;; MacOS specific:1 ends here
 
-;; [[file:config.org::*Org][Org:1]]
+;; [[file:config.org::*General Org Mode][General Org Mode:1]]
 (setq org-directory "~/org/")
 (setq org-agenda-files "~/org/agenda.org")
 
 (after! org
-        (setq org-agenda-start-day "-5d")
-        (setq org-agenda-span 10)
-        (setq org-todo-keywords '((sequence "TODO(t)" "PROJ(p)" "EXERCISE(e)" "|" "DONE(d)" "CANCELLED(c)")))
+  (setq org-agenda-start-day "-5d")
+  (setq org-agenda-span 10)
+  (setq org-todo-keywords '((sequence "TODO(t)" "PROJ(p)" "EXERCISE(e)" "|" "DONE(d)" "CANCELLED(c)")))
 
-        (add-to-list 'org-src-lang-modes '("swiftui" . swift)) ; Syntax highlighting Swift UI
-)
+  (add-to-list 'org-src-lang-modes '("swiftui" . swift)) ; Syntax highlighting Swift UI
+  )
 
 (setq org-title-palette '("#ef476f" "#ffd166" "#06d6a0" "#118ab2" "#073b4c"))
-;(setq org-title-palette '("#264653" "#2a9d8f" "#f4a261" "#e76f51" "#264653"))
+                                        ;(setq org-title-palette '("#264653" "#2a9d8f" "#f4a261" "#e76f51" "#264653"))
 
 (let* ((variable-tuple
         (cond ((x-list-fonts "Inconsolata")       '(:font "Inconsolata"))
@@ -88,7 +90,7 @@
               ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
               (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
        ;; (base-font-color     (face-foreground 'default nil 'default))
-       ;(base-font-color     "mac:textColor")
+                                        ;(base-font-color     "mac:textColor")
        (headline           `(:inherit default :weight bold :foreground "#35a69c")))
 
   (custom-theme-set-faces
@@ -117,37 +119,41 @@
 
 (setq org-cycle-separator-lines -3)
 
-; https://lepisma.xyz/2017/10/28/ricing-org-mode/
-; (setq header-line-format "Hello")
-; (setq header-line-format nil)
+                                        ; https://lepisma.xyz/2017/10/28/ricing-org-mode/
+                                        ;(setq header-line-format "Hello")
+(setq header-line-format " ")
 
-  ;(custom-theme-set-faces
-   ;'user
-   ;'(variable-pitch ((t (:family "ETBembo" :height 180 :weight thin))))
-   ;'(fixed-pitch ((t ( :family "Fira Code Retina" :height 160)))))
-   ;
+                                        ;(custom-theme-set-faces
+                                        ;'user
+                                        ;'(variable-pitch ((t (:family "ETBembo" :height 180 :weight thin))))
+                                        ;'(fixed-pitch ((t ( :family "Fira Code Retina" :height 160)))))
+                                        ;
 (add-hook 'org-mode-hook 'variable-pitch-mode)
 (add-hook 'org-mode-hook 'visual-line-mode)
 (defun set-line-spacing ()
   (setq line-spacing 4)
   )
 (add-hook 'org-mode-hook 'set-line-spacing)
+(setq frame-title-format "This would be the title of the bar")
+                                        ;(menu-bar-mode 1)
+(tool-bar-mode -1)
 
 
-  ;; (custom-theme-set-faces
-  ;;  'user
-  ;;  '(org-block ((t (:inherit fixed-pitch))))
-  ;;  '(org-code ((t (:inherit (shadow fixed-pitch)))))
-  ;;  '(org-document-info ((t (:foreground "dark orange"))))
-  ;;  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
-  ;;  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-  ;;  '(org-link ((t (:foreground "royal blue" :underline t))))
-  ;;  '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-  ;;  '(org-property-value ((t (:inherit fixed-pitch))) t)
-  ;;  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-  ;;  '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
-  ;;  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
-  ;;  '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
+
+;; (custom-theme-set-faces
+;;  'user
+;;  '(org-block ((t (:inherit fixed-pitch))))
+;;  '(org-code ((t (:inherit (shadow fixed-pitch)))))
+;;  '(org-document-info ((t (:foreground "dark orange"))))
+;;  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+;;  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+;;  '(org-link ((t (:foreground "royal blue" :underline t))))
+;;  '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+;;  '(org-property-value ((t (:inherit fixed-pitch))) t)
+;;  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+;;  '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
+;;  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+;;  '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
 
 (setq org-hide-emphasis-markers t)
 ;; (font-lock-add-keywords 'org-mode
@@ -157,12 +163,14 @@
 
 (setq org-image-actual-width (list 550))
 
-(setq-default prettify-symbols-alist '(("#+BEGIN_SRC" . "➤")
+(setq prettify-symbols-alist '(("#+BEGIN_SRC" . "➤")
                                        ("#+END_SRC" . "❰")
                                        ("#+begin_src" . "➤")
                                        ("#+end_src" . "❰")
                                        (">=" . "≥")
-                                       ("=>" . "⇨")))
+                                       ("=>" . "⇨")
+                                       ("#+title:" . ?\n)
+                                       ("#+filetags:" . "»")))
 
 (setq prettify-symbols-unprettify-at-point 'right-edge)
 
@@ -211,7 +219,7 @@
 (map! :leader
       :desc "Remove results"
       "c c" #'org-babel-remove-result-one-or-many)
-;; Org:1 ends here
+;; General Org Mode:1 ends here
 
 ;; [[file:config.org::*ORG Roam/UI][ORG Roam/UI:1]]
 ; Roam UI
@@ -306,7 +314,14 @@
   :config
   (require 'org-roam-dailies) ;; Ensure the keymap is available
   :config
-  (org-roam-setup))
+  (org-roam-setup)
+  )
+
+(after! org-roam
+  (setq org-roam-mode-section-functions
+      (list #'org-roam-backlinks-section
+            #'org-roam-reflinks-section
+            #'org-roam-unlinked-references-section)))
 
 ;; Bind this to C-c n I
 (defun org-roam-node-insert-immediate (arg &rest args)
@@ -377,14 +392,14 @@
   (setq org-tree-slide-skip-done nil))
 ;; Org Tree Slide (Presentations):1 ends here
 
-;; [[file:config.org::*Helpers for fonts][Helpers for fonts:1]]
+;; [[file:config.org::*Fonts helpers][Fonts helpers:1]]
 ; u must disable hl line mode
 (defun what-face (pos)
   (interactive "d")
   (let ((face (or (get-char-property pos 'read-face-name)
                   (get-char-property pos 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
-;; Helpers for fonts:1 ends here
+;; Fonts helpers:1 ends here
 
 ;; [[file:config.org::*Projectile][Projectile:1]]
 (setq projectile-project-search-path '("~/repos/" "~/org"))
@@ -405,7 +420,7 @@
 
 ;; (setq org-pandoc-options-for-latex '((template . "/Users/francorivera/repos/12-handbook/src/template.tex")))
 (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
-                                         (template . "/Users/francorivera/repos/12-handbook/src/template.tex")))
+                                         (template . "/Users/francorivera/repos/12-handbook/src/custom.tex")))
 ;; Pandoc:1 ends here
 
 ;; [[file:config.org::*Mermaid][Mermaid:1]]
@@ -511,7 +526,7 @@
 
 (setq string-replacer--meme-replace-string "⎓")
 (setq string-replacer--font-height 1.0)
-(setq string-replacer--font-width  2.0)
+(setq string-replacer--font-width  2.2)
 (global-string-replacer-mode t)
 ; -------
 ;
@@ -691,3 +706,9 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
 ;;   (yas-global-mode 1))
 ;;
 ;; Yasnippet (Not used):1 ends here
+
+;; [[file:config.org::*Yasnippet (Not used)][Yasnippet (Not used):2]]
+(map! :leader
+      :desc "Replace"
+      "c R" #'replace-string)
+;; Yasnippet (Not used):2 ends here

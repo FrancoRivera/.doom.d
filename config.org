@@ -1,20 +1,22 @@
-#+TITLE: Config
+#+title: Config
+#+filetags: "yolo"
 #+PROPERTY: header-args :tangle config.el :comments link
 
-After changing something, go to title and C-c C-c, then run "org-babel-config" and then SPC h r r
+After _changing anything_, go to the Title and do =C-c C-c= to refresh the local setup, then run =org-babel-tangle= and then =SPC h r r=
 
 * Table of Contents :toc:
 - [[#identification][Identification]]
 - [[#font][Font]]
 - [[#themes][Themes]]
 - [[#editor-style][Editor style]]
-- [[#mac-specific][Mac specific]]
+- [[#macos-specific][MacOS specific]]
 - [[#org][Org]]
+  - [[#general-org-mode][General Org Mode]]
   - [[#org-roamui][ORG Roam/UI]]
   - [[#org-agenda][Org Agenda]]
   - [[#org-roam][Org Roam]]
   - [[#org-tree-slide-presentations][Org Tree Slide (Presentations)]]
-- [[#helpers-for-fonts][Helpers for fonts]]
+- [[#fonts-helpers][Fonts helpers]]
 - [[#packages][Packages]]
   - [[#projectile][Projectile]]
   - [[#pandoc][Pandoc]]
@@ -80,9 +82,6 @@ Note: This also includes the "lexical binding", which i dont really know what it
 ;;   '(font-lock-keyword-face :slant italic))
 #+end_src
 
-#+RESULTS:
-: t
-
 * Themes
 There are two ways to load a theme. Both assume the theme is installed and
 available. You can either set `doom-theme' or manually load a theme with the
@@ -97,12 +96,12 @@ available. You can either set `doom-theme' or manually load a theme with the
 
 (use-package doom-themes
   :custom-face ; for solarized light
+  ; #4bf13c ; bright green (dark mode)
   (font-lock-comment-face ((t (:foreground "#ff0077"))))        ; bright magenta
-  ; (font-lock-comment-face ((t (:foreground "#4bf13c"))))         ; bright green for dark mode
-  ;(font-lock-constant-face      ((t (:foreground "#2aa198"))))                       ; solarized cyan
+  (font-lock-constant-face      ((t (:foreground "#2aa198"))))                       ; solarized cyan
   ;(highlight-numbers-number     ((t (:foreground "#2aa198"))))                       ; solarized cyan
   ;(diff-hl-change               ((t (:background "#2aa198" :foreground "#2aa198")))) ; solarized cyan
-  ;(show-paren-match             ((t (:foreground "white" :background "#174652"))))
+  (show-paren-match             ((t (:foreground "white" :background "#174652"))))
   ;; (highlight-symbol-face        ((t (:background "#073642")))) ; region (base0)
 
   ;; (doom-font (font-spec :family "Iosevka SS01" :size 20 :weight 'regular))
@@ -110,13 +109,13 @@ available. You can either set `doom-theme' or manually load a theme with the
   :config
   ;(load-theme 'doom-solarized-light t))
   (load-theme 'doom-dracula t))
-
 #+end_src
 
 * Editor style
+1. Sets to display the line numbers
+2. sets a vertical line (as an indicator to keep the code shorter than 80 chars)
+
 #+begin_src emacs-lisp
-;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
 (setq fill-column '80)
 (setq global-display-fill-column-indicator t)
@@ -124,29 +123,35 @@ available. You can either set `doom-theme' or manually load a theme with the
 (setq display-fill-column-indicator-character ?\u254E)
 #+end_src
 
-* Mac specific
+* MacOS specific
+Allow the use of option to put accents
 #+begin_src emacs-lisp
-(setq mac-option-modifier 'meta)
-#+end_src
+(setq mac-command-key-is-meta nil)
+(setq mac-command-modifier 'super)
+(setq mac-option-key-is-meta t)
+(setq mac-option-modifier t)
+  #+end_src
 
+#+end_src
 * Org
 If you use `org' and don't want your org files in the default location below,
 change `org-directory'. It must be set before org loads!
 
+** General Org Mode
 #+begin_src emacs-lisp
 (setq org-directory "~/org/")
 (setq org-agenda-files "~/org/agenda.org")
 
 (after! org
-        (setq org-agenda-start-day "-5d")
-        (setq org-agenda-span 10)
-        (setq org-todo-keywords '((sequence "TODO(t)" "PROJ(p)" "EXERCISE(e)" "|" "DONE(d)" "CANCELLED(c)")))
+  (setq org-agenda-start-day "-5d")
+  (setq org-agenda-span 10)
+  (setq org-todo-keywords '((sequence "TODO(t)" "PROJ(p)" "EXERCISE(e)" "|" "DONE(d)" "CANCELLED(c)")))
 
-        (add-to-list 'org-src-lang-modes '("swiftui" . swift)) ; Syntax highlighting Swift UI
-)
+  (add-to-list 'org-src-lang-modes '("swiftui" . swift)) ; Syntax highlighting Swift UI
+  )
 
 (setq org-title-palette '("#ef476f" "#ffd166" "#06d6a0" "#118ab2" "#073b4c"))
-;(setq org-title-palette '("#264653" "#2a9d8f" "#f4a261" "#e76f51" "#264653"))
+                                        ;(setq org-title-palette '("#264653" "#2a9d8f" "#f4a261" "#e76f51" "#264653"))
 
 (let* ((variable-tuple
         (cond ((x-list-fonts "Inconsolata")       '(:font "Inconsolata"))
@@ -157,7 +162,7 @@ change `org-directory'. It must be set before org loads!
               ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
               (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
        ;; (base-font-color     (face-foreground 'default nil 'default))
-       ;(base-font-color     "mac:textColor")
+                                        ;(base-font-color     "mac:textColor")
        (headline           `(:inherit default :weight bold :foreground "#35a69c")))
 
   (custom-theme-set-faces
@@ -186,37 +191,41 @@ change `org-directory'. It must be set before org loads!
 
 (setq org-cycle-separator-lines -3)
 
-; https://lepisma.xyz/2017/10/28/ricing-org-mode/
-; (setq header-line-format "Hello")
-; (setq header-line-format nil)
+                                        ; https://lepisma.xyz/2017/10/28/ricing-org-mode/
+                                        ;(setq header-line-format "Hello")
+(setq header-line-format " ")
 
-  ;(custom-theme-set-faces
-   ;'user
-   ;'(variable-pitch ((t (:family "ETBembo" :height 180 :weight thin))))
-   ;'(fixed-pitch ((t ( :family "Fira Code Retina" :height 160)))))
-   ;
+                                        ;(custom-theme-set-faces
+                                        ;'user
+                                        ;'(variable-pitch ((t (:family "ETBembo" :height 180 :weight thin))))
+                                        ;'(fixed-pitch ((t ( :family "Fira Code Retina" :height 160)))))
+                                        ;
 (add-hook 'org-mode-hook 'variable-pitch-mode)
 (add-hook 'org-mode-hook 'visual-line-mode)
 (defun set-line-spacing ()
   (setq line-spacing 4)
   )
 (add-hook 'org-mode-hook 'set-line-spacing)
+(setq frame-title-format "This would be the title of the bar")
+                                        ;(menu-bar-mode 1)
+(tool-bar-mode -1)
 
 
-  ;; (custom-theme-set-faces
-  ;;  'user
-  ;;  '(org-block ((t (:inherit fixed-pitch))))
-  ;;  '(org-code ((t (:inherit (shadow fixed-pitch)))))
-  ;;  '(org-document-info ((t (:foreground "dark orange"))))
-  ;;  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
-  ;;  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-  ;;  '(org-link ((t (:foreground "royal blue" :underline t))))
-  ;;  '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-  ;;  '(org-property-value ((t (:inherit fixed-pitch))) t)
-  ;;  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-  ;;  '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
-  ;;  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
-  ;;  '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
+
+;; (custom-theme-set-faces
+;;  'user
+;;  '(org-block ((t (:inherit fixed-pitch))))
+;;  '(org-code ((t (:inherit (shadow fixed-pitch)))))
+;;  '(org-document-info ((t (:foreground "dark orange"))))
+;;  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+;;  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+;;  '(org-link ((t (:foreground "royal blue" :underline t))))
+;;  '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+;;  '(org-property-value ((t (:inherit fixed-pitch))) t)
+;;  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+;;  '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
+;;  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+;;  '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
 
 (setq org-hide-emphasis-markers t)
 ;; (font-lock-add-keywords 'org-mode
@@ -226,12 +235,14 @@ change `org-directory'. It must be set before org loads!
 
 (setq org-image-actual-width (list 550))
 
-(setq-default prettify-symbols-alist '(("#+BEGIN_SRC" . "➤")
+(setq prettify-symbols-alist '(("#+BEGIN_SRC" . "➤")
                                        ("#+END_SRC" . "❰")
                                        ("#+begin_src" . "➤")
                                        ("#+end_src" . "❰")
                                        (">=" . "≥")
-                                       ("=>" . "⇨")))
+                                       ("=>" . "⇨")
+                                       ("#+title:" . ?\n)
+                                       ("#+filetags:" . "»")))
 
 (setq prettify-symbols-unprettify-at-point 'right-edge)
 
@@ -382,7 +393,14 @@ change `org-directory'. It must be set before org loads!
   :config
   (require 'org-roam-dailies) ;; Ensure the keymap is available
   :config
-  (org-roam-setup))
+  (org-roam-setup)
+  )
+
+(after! org-roam
+  (setq org-roam-mode-section-functions
+      (list #'org-roam-backlinks-section
+            #'org-roam-reflinks-section
+            #'org-roam-unlinked-references-section)))
 
 ;; Bind this to C-c n I
 (defun org-roam-node-insert-immediate (arg &rest args)
@@ -456,10 +474,7 @@ Hide mode line is something to emulate a presentation
   (setq org-tree-slide-skip-done nil))
 #+end_src
 
-#+RESULTS:
-
-
-* Helpers for fonts
+* Fonts helpers
 
 #+begin_src emacs-lisp
 ; u must disable hl line mode
@@ -468,7 +483,6 @@ Hide mode line is something to emulate a presentation
   (let ((face (or (get-char-property pos 'read-face-name)
                   (get-char-property pos 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
-
 #+end_src
 
 * Packages
@@ -492,7 +506,7 @@ Hide mode line is something to emulate a presentation
 
 ;; (setq org-pandoc-options-for-latex '((template . "/Users/francorivera/repos/12-handbook/src/template.tex")))
 (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
-                                         (template . "/Users/francorivera/repos/12-handbook/src/template.tex")))
+                                         (template . "/Users/francorivera/repos/12-handbook/src/custom.tex")))
 #+end_src
 
 
@@ -602,11 +616,14 @@ Hide mode line is something to emulate a presentation
 
 (setq string-replacer--meme-replace-string "⎓")
 (setq string-replacer--font-height 1.0)
-(setq string-replacer--font-width  2.0)
+(setq string-replacer--font-width  2.2)
 (global-string-replacer-mode t)
 ; -------
 ;
 #+end_src
+
+#+RESULTS:
+: t
 
 ** ESS (Emacs speaks statistics)
 #+begin_src emacs-lisp
@@ -795,3 +812,9 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
 #+end_src
 
 
+#+begin_src emacs-lisp
+(map! :leader
+      :desc "Replace"
+      "c R" #'replace-string)
+
+#+end_src
