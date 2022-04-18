@@ -59,7 +59,6 @@
 ;; Editor style:1 ends here
 
 ;; [[file:config.org::*MacOS specific][MacOS specific:1]]
-(setq mac-option-modifier 'meta)
 (setq mac-command-key-is-meta nil)
 (setq mac-command-modifier 'super)
 (setq mac-option-key-is-meta t)
@@ -233,12 +232,12 @@
 
 (use-package! org-roam-ui
     :after org-roam
-    :hook (after-init . org-roam-ui-mode)
+    ;; :hook (after-init . org-roam-ui-mode)
     :config
     (setq org-roam-ui-sync-theme t
           org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
+          org-roam-ui-update-on-save t))
+          ;;org-roam-ui-open-on-start t
 ;; ORG Roam/UI:1 ends here
 
 ;; [[file:config.org::*Org Agenda][Org Agenda:1]]
@@ -418,9 +417,27 @@
       :desc "Export org to PDF via latex with pandoc"
       "e" #'org-pandoc-export-to-latex-pdf)
 
+(defun cv-pdf()
+  (interactive)
+(setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
+                                         (template . "/home/franco/repos/latex/cv.tex"))))
+(defun eis-pdf()
+  (interactive)
+(setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
+                                         (template . "/home/franco/repos/latex/eis.tex"))))
+(map! :leader
+      (:prefix ("d" . "exports")
+      :desc "Set pdf to CV"
+      "v" #'cv-pdf))
+
+(map! :leader
+      (:prefix ("d" . "exports")
+      :desc "Set value to eisvogel"
+      "e" #'eisvogel-pdf))
+
 ;; (setq org-pandoc-options-for-latex '((template . "/Users/francorivera/repos/12-handbook/src/template.tex")))
 (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
-                                         (template . "/Users/francorivera/repos/12-handbook/src/custom.tex")))
+                                         (template . "/home/franco/repos/latex/eisvogel.tex")))
 ;; Pandoc:1 ends here
 
 ;; [[file:config.org::*Mermaid][Mermaid:1]]
@@ -522,14 +539,12 @@
 ;; SVG Tag mode:1 ends here
 
 ;; [[file:config.org::*String replacer][String replacer:1]]
-(load-file "~/repos/string-replacer-mode/string-replacer-mode.el")
+;; (load-file "~/repos/string-replacer-mode/string-replacer-mode.el")
 
-(setq string-replacer--meme-replace-string "⎓")
-(setq string-replacer--font-height 1.0)
-(setq string-replacer--font-width  2.2)
-(global-string-replacer-mode t)
-; -------
-;
+;; (setq string-replacer--meme-replace-string "⎓")
+;; (setq string-replacer--font-height 1.0)
+;; (setq string-replacer--font-width  2.2)
+;; (global-string-replacer-mode t)
 ;; String replacer:1 ends here
 
 ;; [[file:config.org::*ESS (Emacs speaks statistics)][ESS (Emacs speaks statistics):1]]

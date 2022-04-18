@@ -309,13 +309,12 @@ change `org-directory'. It must be set before org loads!
 
 (use-package! org-roam-ui
     :after org-roam
-    :hook (after-init . org-roam-ui-mode)
+    ;; :hook (after-init . org-roam-ui-mode)
     :config
     (setq org-roam-ui-sync-theme t
           org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
-
+          org-roam-ui-update-on-save t))
+          ;;org-roam-ui-open-on-start t
 #+end_src
 
 ** Org Agenda
@@ -506,7 +505,7 @@ Hide mode line is something to emulate a presentation
 
 ;; (setq org-pandoc-options-for-latex '((template . "/Users/francorivera/repos/12-handbook/src/template.tex")))
 (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
-                                         (template . "/Users/francorivera/repos/12-handbook/src/custom.tex")))
+                                         (template . "/home/franco/repos/latex/template.tex")))
 #+end_src
 
 
@@ -612,18 +611,13 @@ Hide mode line is something to emulate a presentation
 #+end_src
 ** String replacer
 #+begin_src emacs-lisp
-(load-file "~/repos/string-replacer-mode/string-replacer-mode.el")
+;; (load-file "~/repos/string-replacer-mode/string-replacer-mode.el")
 
-(setq string-replacer--meme-replace-string "⎓")
-(setq string-replacer--font-height 1.0)
-(setq string-replacer--font-width  2.2)
-(global-string-replacer-mode t)
-; -------
-;
+;; (setq string-replacer--meme-replace-string "⎓")
+;; (setq string-replacer--font-height 1.0)
+;; (setq string-replacer--font-width  2.2)
+;; (global-string-replacer-mode t)
 #+end_src
-
-#+RESULTS:
-: t
 
 ** ESS (Emacs speaks statistics)
 #+begin_src emacs-lisp
