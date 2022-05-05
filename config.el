@@ -417,14 +417,19 @@
       :desc "Export org to PDF via latex with pandoc"
       "e" #'org-pandoc-export-to-latex-pdf)
 
+;; (setq org-pandoc-options-for-latex '((template . "/Users/francorivera/repos/12-handbook/src/template.tex")))
+(setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
+                                         (template . "/home/franco/repos/latex/template.tex")))
+
+
 (defun cv-pdf()
   (interactive)
 (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
                                          (template . "/home/franco/repos/latex/cv.tex"))))
-(defun eis-pdf()
+(defun eisvogel-pdf()
   (interactive)
 (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
-                                         (template . "/home/franco/repos/latex/eis.tex"))))
+                                         (template . "/home/franco/repos/latex/eisvogel.tex"))))
 (map! :leader
       (:prefix ("d" . "exports")
       :desc "Set pdf to CV"

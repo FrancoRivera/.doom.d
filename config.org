@@ -506,6 +506,29 @@ Hide mode line is something to emulate a presentation
 ;; (setq org-pandoc-options-for-latex '((template . "/Users/francorivera/repos/12-handbook/src/template.tex")))
 (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
                                          (template . "/home/franco/repos/latex/template.tex")))
+
+
+(defun cv-pdf()
+  (interactive)
+(setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
+                                         (template . "/home/franco/repos/latex/cv.tex"))))
+(defun eisvogel-pdf()
+  (interactive)
+(setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
+                                         (template . "/home/franco/repos/latex/eisvogel.tex"))))
+(map! :leader
+      (:prefix ("d" . "exports")
+      :desc "Set pdf to CV"
+      "v" #'cv-pdf))
+
+(map! :leader
+      (:prefix ("d" . "exports")
+      :desc "Set value to eisvogel"
+      "e" #'eisvogel-pdf))
+
+;; (setq org-pandoc-options-for-latex '((template . "/Users/francorivera/repos/12-handbook/src/template.tex")))
+(setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
+                                         (template . "/home/franco/repos/latex/eisvogel.tex")))
 #+end_src
 
 
