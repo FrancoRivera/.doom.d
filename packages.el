@@ -73,7 +73,7 @@
 ; (package! lsp-treemacs)
 (package! flycheck)
 (package! company)
-; (package! yasnippet)
+(package! yasnippet)
 (package! lsp-ui)
 (package! hover)
 (package! ob-swift)
@@ -81,3 +81,5 @@
 (package! org-padding
   :recipe (:host github :repo "TonCherAmi/org-padding"))
 (package! vue-mode)
+
+(package! emacsql-sqlite3)

@@ -6,8 +6,8 @@
 ;; Identification:1 ends here
 
 ;; [[file:config.org::*Font][Font:1]]
-(setq doom-font (font-spec :family "Iosevka SS01" :size 16 :weight 'regular)
-       doom-variable-pitch-font (font-spec :family "Inconsolata" :size 16))
+(setq doom-font (font-spec :family "Iosevka SS01" :size 14 :weight 'regular)
+       doom-variable-pitch-font (font-spec :family "Inconsolata" :size 14))
 
 ; Run after changing: SPACE h r f
 
@@ -59,8 +59,8 @@
 ;; Editor style:1 ends here
 
 ;; [[file:config.org::*MacOS specific][MacOS specific:1]]
-(setq mac-option-modifier 'meta)
 (setq mac-command-key-is-meta nil)
+;; (setq mac-option-modifier 'meta)
 (setq mac-command-modifier 'super)
 (setq mac-option-key-is-meta t)
 (setq mac-option-modifier t)
@@ -80,7 +80,7 @@
 
 (setq org-title-palette '("#ef476f" "#ffd166" "#06d6a0" "#118ab2" "#073b4c"))
                                         ;(setq org-title-palette '("#264653" "#2a9d8f" "#f4a261" "#e76f51" "#264653"))
-
+(when window-system
 (let* ((variable-tuple
         (cond ((x-list-fonts "Inconsolata")       '(:font "Inconsolata"))
               ((x-list-fonts "ETBembo")         '(:font "ETBembo"))
@@ -108,7 +108,7 @@
    '(fixed-pitch ((t ( :family "Iosevka SS01" :height 150))))
    '(org-block ((t (:inherit fixed-pitch))))
    '(org-code ((t (:inherit (shadow fixed-pitch)))))
-   ))
+   )))
 
 (use-package! "org-padding")
 (setq org-padding-heading-padding-alist
@@ -233,12 +233,12 @@
 
 (use-package! org-roam-ui
     :after org-roam
-    :hook (after-init . org-roam-ui-mode)
     :config
     (setq org-roam-ui-sync-theme t
           org-roam-ui-follow t
           org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
+          ))
+          ;; org-roam-ui-open-on-start t
 ;; ORG Roam/UI:1 ends here
 
 ;; [[file:config.org::*Org Agenda][Org Agenda:1]]
@@ -252,6 +252,8 @@
 ;; Org Agenda:1 ends here
 
 ;; [[file:config.org::*Org Roam][Org Roam:1]]
+(use-package emacsql-sqlite3)
+(setq org-roam-database-connector 'sqlite3)
 (use-package org-roam
   :ensure t
   :init
@@ -264,7 +266,8 @@
    '(
      ("d" "default" entry "* %<%I:%M %p>: %?"
        :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))
-     ("h" "Hckr news reading" entry "* %<%I:%M %p>: HN Reading\n %?"
+     ("h" "Hckr news reading" entry
+      "* %<%I:%M %p>: HN Reading\n** Tech \n **Software\n ** Business \n** Other\n %?"
        :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
   (org-roam-capture-templates
    '(("d" "default" plain
@@ -420,7 +423,24 @@
 
 ;; (setq org-pandoc-options-for-latex '((template . "/Users/francorivera/repos/12-handbook/src/template.tex")))
 (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
-                                         (template . "/Users/francorivera/repos/12-handbook/src/custom.tex")))
+                                         (template . "/Users/francorivera/repos/latex/eisvogel.tex")))
+(defun cv-pdf()
+  (interactive)
+(setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
+                                         (template . "/Users/francorivera/repos/latex/cv.tex"))))
+(defun eisvogel-pdf()
+  (interactive)
+(setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
+                                         (template . "/Users/francorivera/repos/latex/eisvogel.tex"))))
+(map! :leader
+      (:prefix ("d" . "exports")
+      :desc "Set pdf to CV"
+      "v" #'cv-pdf))
+
+(map! :leader
+      (:prefix ("d" . "exports")
+      :desc "Set value to eisvogel"
+      "e" #'eisvogel-pdf))
 ;; Pandoc:1 ends here
 
 ;; [[file:config.org::*Mermaid][Mermaid:1]]
@@ -672,6 +692,52 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
        ""))))
 ;; Swift/SwiftUI:1 ends here
 
+;; [[file:config.org::*Export to apple notes][Export to apple notes:1]]
+; https://orgmode.org/manual/HTML-preamble-and-postamble.html
+;; disable author + date + validate link at end of HTML exports
+(setq org-html-postamble nil)
+
+(setq org-export-with-broken-links t)
+
+(defun org-html-publish-to-html-for-apple-notes (plist filename pub-dir)
+  "Convert blank lines to <br /> and remove <h1> titles."
+  ;; temporarily configure export to convert math to images because
+  ;; apple notes obviously can't use mathjax (the default)
+  (let* ((org-html-with-latex 'imagemagick)
+         (outfile
+          (org-publish-org-to 'html filename
+                              (concat "." (or (plist-get plist :html-extension)
+                                              org-html-extension
+                                              "html"))
+                              plist pub-dir)))
+    ;; 1. apple notes handles <p> paras badly, so we have to replace all blank
+    ;;    lines (which the orgmode export accurately leaves for us) with
+    ;;    <br /> tags to get apple notes to actually render blank lines between
+    ;;    paragraphs
+    ;; 2. remove large h1 with title, as apple notes already adds <title> as
+    ;; the note title
+    (shell-command
+     (format "sed -i \"\" -e 's/^$/<br \\/>/' -e 's/<h1 class=\"title\">.*<\\/h1>$//' %s"
+             outfile))
+    outfile))
+
+(setq org-publish-project-alist
+      '(("pkb4000"
+         :base-directory "~/roam/"
+         :publishing-directory "~/Documents/roam-apple/"
+         :recursive t
+         :publishing-function org-html-publish-to-html-for-apple-notes
+         :section-numbers nil
+         :with-toc nil)
+        ("pkb4000-static"
+         :base-directory "~/roam/"
+         :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+         :publishing-directory "~/Documents/roam-apple/"
+         :recursive t
+         :publishing-function org-publish-attachment
+         )))
+;; Export to apple notes:1 ends here
+
 ;; [[file:config.org::*Other/Not used][Other/Not used:1]]
     ; (magit-log-margin-width)
     ; (setq magit-log-margin--custom-type (t "%Y-%m-%d %H:%M " magit-log-margin-width t 18))
@@ -712,3 +778,23 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
       :desc "Replace"
       "c R" #'replace-string)
 ;; Yasnippet (Not used):2 ends here
+
+;; [[file:config.org::*Javascript][Javascript:1]]
+(setq js-indent-level 2)
+;;; runs eslint --fix on the current file after save
+;;; alpha quality -- use at your own risk
+
+(defun eslint-fix-file ()
+  (interactive)
+  (message "eslint --fixing the file" (buffer-file-name))
+  (shell-command (concat "eslint --fix " (buffer-file-name))))
+
+(defun eslint-fix-file-and-revert ()
+  (interactive)
+  (eslint-fix-file)
+  (revert-buffer t t))
+
+;; (add-hook 'rjsx-mode-hook
+;;           (lambda ()
+;;             (add-hook 'after-save-hook #'eslint-fix-file-and-revert)))
+;; Javascript:1 ends here
