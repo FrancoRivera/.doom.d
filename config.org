@@ -34,6 +34,7 @@ After _changing anything_, go to the Title and do =C-c C-c= to refresh the local
   - [[#ctags-not-used][CTags (not used)]]
   - [[#yasnippet-not-used][Yasnippet (Not used)]]
   - [[#javascript][Javascript]]
+  - [[#beautiful-box-comments][Beautiful box comments]]
 
 * Identification
 Place your private configuration here! Remember, you do not need to run 'doom
@@ -132,17 +133,30 @@ Allow the use of option to put accents
 ;; (setq mac-option-modifier 'meta)
 (setq mac-command-modifier 'super)
 (setq mac-option-key-is-meta t)
-(setq mac-option-modifier t)
-  #+end_src
+(setq mac-option-modifier 'option)
 
-#+end_src
+(setq mode-require-final-newline nil) ; (avoid newline for scripts)
+;; (setq require-final-newline nil) ; (avoid newline for scripts)
+; auto expand snippets
+(defun my-yas-try-expanding-auto-snippets ()
+  (when yas-minor-mode
+    (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
+      (yas-expand))))
+(add-hook 'post-command-hook #'my-yas-try-expanding-auto-snippets)
+
+  #+end_src
 
 * Org
 If you use `org' and don't want your org files in the default location below,
 change `org-directory'. It must be set before org loads!
 
-** General Org Mode
+** General Org Mode :ATTACH:
+:PROPERTIES:
+:ID:       14f0f530-023c-4f53-9acf-b8a35dfd92a4
+:END:
 #+begin_src emacs-lisp
+
+[[attachment:_20221030_103320config.el]]
 (setq org-directory "~/org/")
 (setq org-agenda-files "~/org/agenda.org")
 
@@ -350,7 +364,7 @@ change `org-directory'. It must be set before org loads!
      ("d" "default" entry "* %<%I:%M %p>: %?"
        :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))
      ("h" "Hckr news reading" entry
-      "* %<%I:%M %p>: HN Reading\n** Tech \n **Software\n ** Business \n** Other\n %?"
+      (file "~/roam/Templates/HN.org")
        :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
   (org-roam-capture-templates
    '(("d" "default" plain
@@ -418,6 +432,7 @@ change `org-directory'. It must be set before org loads!
     (apply #'org-roam-node-insert args)))
 
 #+end_src
+
 
 ** Org Tree Slide (Presentations)
 Hide mode line is something to emulate a presentation
@@ -912,4 +927,12 @@ Taken from
 ;; (add-hook 'rjsx-mode-hook
 ;;           (lambda ()
 ;;             (add-hook 'after-save-hook #'eslint-fix-file-and-revert)))
+#+end_src
+
+
+** Beautiful box comments
+#+begin_src emacs-lisp
+(map! :leader
+      :desc "Beautiful boxes"
+      "c b" #'aa2u)
 #+end_src

@@ -63,10 +63,20 @@
 ;; (setq mac-option-modifier 'meta)
 (setq mac-command-modifier 'super)
 (setq mac-option-key-is-meta t)
-(setq mac-option-modifier t)
+(setq mac-option-modifier 'option)
+
+(setq mode-require-final-newline nil) ; (avoid newline for scripts)
+;; (setq require-final-newline nil) ; (avoid newline for scripts)
+; auto expand snippets
+(defun my-yas-try-expanding-auto-snippets ()
+  (when yas-minor-mode
+    (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
+      (yas-expand))))
+(add-hook 'post-command-hook #'my-yas-try-expanding-auto-snippets)
 ;; MacOS specific:1 ends here
 
 ;; [[file:config.org::*General Org Mode][General Org Mode:1]]
+[[attachment:_20221030_103320config.el]]
 (setq org-directory "~/org/")
 (setq org-agenda-files "~/org/agenda.org")
 
@@ -267,7 +277,7 @@
      ("d" "default" entry "* %<%I:%M %p>: %?"
        :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))
      ("h" "Hckr news reading" entry
-      "* %<%I:%M %p>: HN Reading\n** Tech \n **Software\n ** Business \n** Other\n %?"
+      (file "~/roam/Templates/HN.org")
        :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
   (org-roam-capture-templates
    '(("d" "default" plain
@@ -798,3 +808,9 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
 ;;           (lambda ()
 ;;             (add-hook 'after-save-hook #'eslint-fix-file-and-revert)))
 ;; Javascript:1 ends here
+
+;; [[file:config.org::*Beautiful box comments][Beautiful box comments:1]]
+(map! :leader
+      :desc "Beautiful boxes"
+      "c b" #'aa2u)
+;; Beautiful box comments:1 ends here

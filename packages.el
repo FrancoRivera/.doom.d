@@ -73,7 +73,6 @@
 ; (package! lsp-treemacs)
 (package! flycheck)
 (package! company)
-(package! yasnippet)
 (package! lsp-ui)
 (package! hover)
 (package! ob-swift)
@@ -83,3 +82,4 @@
 (package! vue-mode)
 
 (package! emacsql-sqlite3)
+(package! ascii-art-to-unicode)
