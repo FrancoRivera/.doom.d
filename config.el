@@ -80,6 +80,7 @@
 (setq org-title-palette '("#ef476f" "#ffd166" "#06d6a0" "#118ab2" "#073b4c"))
                                         ;(setq org-title-palette '("#264653" "#2a9d8f" "#f4a261" "#e76f51" "#264653"))
 
+(when window-system
 (let* ((variable-tuple
         (cond ((x-list-fonts "Inconsolata")       '(:font "Inconsolata"))
               ((x-list-fonts "ETBembo")         '(:font "ETBembo"))
@@ -107,7 +108,7 @@
    '(fixed-pitch ((t ( :family "Iosevka SS01" :height 150))))
    '(org-block ((t (:inherit fixed-pitch))))
    '(org-code ((t (:inherit (shadow fixed-pitch)))))
-   ))
+   )))
 
 (use-package! "org-padding")
 (setq org-padding-heading-padding-alist
@@ -576,7 +577,11 @@
 
 (setq lsp-dart-sdk-dir "/opt/homebrew/Caskroom/flutter/2.8.1/flutter/bin/cache/dart-sdk/")
 
-(use-package! lsp-mode)
+;(use-package! lsp-mode)
+(use-package! lsp-mode
+  ;:config
+  ;(setq lsp-pyls-plugins-jedi-environment "/home/franco/.virtualenvs/fiume")
+  )
 (use-package! lsp-dart
   :hook (dart-mode . lsp))
 ; (use-package! yasnippet :config (yas-global-mode))
@@ -732,3 +737,22 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
       :desc "Replace"
       "c R" #'replace-string)
 ;; Yasnippet (Not used):2 ends here
+
+;; [[file:config.org::*Fix Shell path][Fix Shell path:1]]
+(defun set-exec-path-from-shell-PATH ()
+  "Set up Emacs' `exec-path' and PATH environment variable to match
+that used by the user's shell.
+
+This is particularly useful under Mac OS X and macOS, where GUI
+apps are not started from a shell."
+  (interactive)
+  (let ((path-from-shell (replace-regexp-in-string
+			  "[ \t\n]*$" "" (shell-command-to-string
+                      "$SHELL --login -c 'string join : $PATH'      " ; for FISH
+					  ; "$SHELL --login -c 'echo $PATH'" ; for other paths
+						    ))))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(set-exec-path-from-shell-PATH)
+;; Fix Shell path:1 ends here

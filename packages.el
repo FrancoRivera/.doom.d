@@ -81,3 +81,4 @@
 (package! org-padding
   :recipe (:host github :repo "TonCherAmi/org-padding"))
 (package! vue-mode)
+; (package! jedi)
