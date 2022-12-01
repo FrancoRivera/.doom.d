@@ -11,7 +11,7 @@
 
 ;; To install a package directly from a remote git repo, you must specify a
 ;; `:recipe'. You'll find documentation on what `:recipe' accepts here:
-;; https://github.com/raxod502/straight.el#the-recipe-format
+;; https://github.com/radian-software/straight.el#the-recipe-format
 ;(package! another-package
 ;  :recipe (:host github :repo "username/repo"))
 
@@ -34,7 +34,7 @@
 
 ;; Specify a `:branch' to install a package from a particular branch or tag.
 ;; This is required for some packages whose default branch isn't 'master' (which
-;; our package manager can't deal with; see raxod502/straight.el#279)
+;; our package manager can't deal with; see radian-software/straight.el#279)
 ;(package! builtin-package :recipe (:branch "develop"))
 
 ;; Use `:pin' to specify a particular commit to install.
@@ -49,37 +49,47 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
-(package! evil-tutor)
-(package! ess)
-(package! gnuplot)
-(package! gnuplot-mode)
+;; (package! evil-tutor)
+;; (package! ess)
+;; (package! gnuplot)
+;; (package! gnuplot-mode)
 (package! pandoc-mode)
 
-;; ORG roam
+;; ORG roam + roam -ui
 (package! org-roam)
-(unpin! org-roam)
+ (unpin! org-roam) ; needed for org-roam-ui
 (package! org-roam-ui)
 
-(package! ag)
-(package! epresent)
-(package! org-tree-slide)
-(package! mermaid-mode)
-(package! ob-mermaid)
-(package! svg-tag-mode)
-; for LSP Dart
-(package! dart-mode)
-(package! lsp-mode)
-(package! lsp-dart)
-; (package! lsp-treemacs)
-(package! flycheck)
-(package! company)
-(package! lsp-ui)
-(package! hover)
-(package! ob-swift)
-(package! ob-swiftui)  ; https://xenodium.com/previewing-swiftui-layouts-in-emacs-revisited/
-(package! org-padding
+(package! ag) ; fast searcher
+
+; For presentations (disabled)
+;; (package! epresent) ; for ppt style presentgions
+;; (package! org-tree-slide) ; for presentations
+
+; For Mermaid mode (disabled)
+; (package! mermaid-mode)
+; (package! ob-mermaid)
+
+; Nicolas p rougier cool SVG tags (i dont use this)
+; (package! svg-tag-mode)
+;
+; for LSP Dart (disabled)
+;'(package! dart-mode)
+;(package! lsp-mode)
+;(package! lsp-dart)
+;(package! hover)
+;
+;(package! flycheck)
+;(package! company)
+;(package! lsp-ui)
+;(package! ob-swift)
+;(package! ob-swiftui)  ; https://xenodium.com/previewing-swiftui-layouts-in-emacs-revisited/
+;
+(package! org-padding ; add a bit of padding to org-mode (ui only)
   :recipe (:host github :repo "TonCherAmi/org-padding"))
+
+; Support for Vue.js
 (package! vue-mode)
 
-(package! emacsql-sqlite3)
 (package! ascii-art-to-unicode)
+

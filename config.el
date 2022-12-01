@@ -26,7 +26,7 @@
 ;; Font:1 ends here
 
 ;; [[file:config.org::*Themes][Themes:1]]
-(setq doom-theme 'doom-one)
+(setq doom-theme 'doom-solarized-light)
 
 ;; (custom-theme-set-faces
 ;;  'doom-one
@@ -46,8 +46,8 @@
   ;; (doom-font (font-spec :family "Iosevka SS01" :size 20 :weight 'regular))
   ;; (doom-variable-pitch-font (font-spec :family "Inconsolata" :size 11))
   :config
-  ;(load-theme 'doom-solarized-light t))
-  (load-theme 'doom-dracula t))
+  (load-theme 'doom-solarized-light t))
+  ;(load-theme 'doom-dracula t))
 ;; Themes:1 ends here
 
 ;; [[file:config.org::*Editor style][Editor style:1]]
@@ -56,6 +56,7 @@
 (setq global-display-fill-column-indicator t)
 (setq display-fill-column-indicator t)
 (setq display-fill-column-indicator-character ?\u254E)
+(setq evil-want-fine-undo t)
 ;; Editor style:1 ends here
 
 ;; [[file:config.org::*MacOS specific][MacOS specific:1]]
@@ -262,8 +263,8 @@
 ;; Org Agenda:1 ends here
 
 ;; [[file:config.org::*Org Roam][Org Roam:1]]
-(use-package emacsql-sqlite3)
-(setq org-roam-database-connector 'sqlite3)
+;; (use-package emacsql-sqlite3)
+;; (setq org-roam-database-connector 'sqlite3)
 (use-package org-roam
   :ensure t
   :init
@@ -458,86 +459,86 @@
 ;; Mermaid:1 ends here
 
 ;; [[file:config.org::*SVG Tag mode][SVG Tag mode:1]]
-(require 'svg-tag-mode)
+;; (require 'svg-tag-mode)
 
-(defconst date-re "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}")
-(defconst time-re "[0-9]\\{2\\}:[0-9]\\{2\\}")
-(defconst day-re "[A-Za-z]\\{3\\}")
-
-(defun svg-progress-percent (value)
-  (svg-image (svg-lib-concat
-              (svg-lib-progress-bar (/ (string-to-number value) 100.0)
-                                nil :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
-              (svg-lib-tag (concat value "%")
-                           nil :stroke 0 :margin 0)) :ascent 'center))
-
-(defun svg-progress-count (value)
-  (let* ((seq (mapcar #'string-to-number (split-string value "/")))
-         (count (float (car seq)))
-         (total (float (cadr seq))))
-  (svg-image (svg-lib-concat
-              (svg-lib-progress-bar (/ count total) nil
-                                    :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
-              (svg-lib-tag value nil
-                           :stroke 0 :margin 0)) :ascent 'center)))
-
-(setq svg-tag-tags
-      `(
-        ;; Org tags
-        (":\\([A-Za-z0-9]+\\)" . ((lambda (tag) (svg-tag-make tag))))
-        (":\\([A-Za-z0-9]+[ \-]\\)" . ((lambda (tag) tag)))
-
-        ;; Task priority
-        ("\\[#[A-Z]\\]" . ( (lambda (tag)
-                              (svg-tag-make tag :face 'org-priority
-                                            :beg 2 :end -1 :margin 0))))
-
-        ;; Progress
-        ("\\(\\[[0-9]\\{1,3\\}%\\]\\)" . ((lambda (tag)
-                                            (svg-progress-percent (substring tag 1 -2)))))
-        ("\\(\\[[0-9]+/[0-9]+\\]\\)" . ((lambda (tag)
-                                          (svg-progress-count (substring tag 1 -1)))))
-
-        ;; TODO / DONE
-        ("TODO" . ((lambda (tag) (svg-tag-make "TODO" :face 'org-todo :inverse t :margin 0))))
-        ("DONE" . ((lambda (tag) (svg-tag-make "DONE" :face 'org-done :margin 0))))
-
-
-        ;; Citation of the form [cite:@Knuth:1984]
-        ("\\(\\[cite:@[A-Za-z]+:\\)" . ((lambda (tag)
-                                          (svg-tag-make tag
-                                                        :inverse t
-                                                        :beg 7 :end -1
-                                                        :crop-right t))))
-        ("\\[cite:@[A-Za-z]+:\\([0-9]+\\]\\)" . ((lambda (tag)
-                                                (svg-tag-make tag
-                                                              :end -1
-                                                              :crop-left t))))
-
-
-        ;; Active date (without day name, with or without time)
-        (,(format "\\(<%s>\\)" date-re) .
-         ((lambda (tag)
-            (svg-tag-make tag :beg 1 :end -1 :margin 0))))
-        (,(format "\\(<%s *\\)%s>" date-re time-re) .
-         ((lambda (tag)
-            (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0))))
-        (,(format "<%s *\\(%s>\\)" date-re time-re) .
-         ((lambda (tag)
-            (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0))))
-
-        ;; Inactive date  (without day name, with or without time)
-         (,(format "\\(\\[%s\\]\\)" date-re) .
-          ((lambda (tag)
-             (svg-tag-make tag :beg 1 :end -1 :margin 0 :face 'org-date))))
-         (,(format "\\(\\[%s *\\)%s\\]" date-re time-re) .
-          ((lambda (tag)
-             (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0 :face 'org-date))))
-         (,(format "\\[%s *\\(%s\\]\\)" date-re time-re) .
-          ((lambda (tag)
-             (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'org-date))))))
-
-(svg-tag-mode t)
+;; (defconst date-re "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}")
+;; (defconst time-re "[0-9]\\{2\\}:[0-9]\\{2\\}")
+;; (defconst day-re "[A-Za-z]\\{3\\}")
+;;
+;; (defun svg-progress-percent (value)
+;;   (svg-image (svg-lib-concat
+;;               (svg-lib-progress-bar (/ (string-to-number value) 100.0)
+;;                                 nil :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
+;;               (svg-lib-tag (concat value "%")
+;;                            nil :stroke 0 :margin 0)) :ascent 'center))
+;;
+;; (defun svg-progress-count (value)
+;;   (let* ((seq (mapcar #'string-to-number (split-string value "/")))
+;;          (count (float (car seq)))
+;;          (total (float (cadr seq))))
+;;   (svg-image (svg-lib-concat
+;;               (svg-lib-progress-bar (/ count total) nil
+;;                                     :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
+;;               (svg-lib-tag value nil
+;;                            :stroke 0 :margin 0)) :ascent 'center)))
+;;
+;; (setq svg-tag-tags
+;;       `(
+;;         ;; Org tags
+;;         (":\\([A-Za-z0-9]+\\)" . ((lambda (tag) (svg-tag-make tag))))
+;;         (":\\([A-Za-z0-9]+[ \-]\\)" . ((lambda (tag) tag)))
+;;
+;;         ;; Task priority
+;;         ("\\[#[A-Z]\\]" . ( (lambda (tag)
+;;                               (svg-tag-make tag :face 'org-priority
+;;                                             :beg 2 :end -1 :margin 0))))
+;;
+;;         ;; Progress
+;;         ("\\(\\[[0-9]\\{1,3\\}%\\]\\)" . ((lambda (tag)
+;;                                             (svg-progress-percent (substring tag 1 -2)))))
+;;         ("\\(\\[[0-9]+/[0-9]+\\]\\)" . ((lambda (tag)
+;;                                           (svg-progress-count (substring tag 1 -1)))))
+;;
+;;         ;; TODO / DONE
+;;         ("TODO" . ((lambda (tag) (svg-tag-make "TODO" :face 'org-todo :inverse t :margin 0))))
+;;         ("DONE" . ((lambda (tag) (svg-tag-make "DONE" :face 'org-done :margin 0))))
+;;
+;;
+;;         ;; Citation of the form [cite:@Knuth:1984]
+;;         ("\\(\\[cite:@[A-Za-z]+:\\)" . ((lambda (tag)
+;;                                           (svg-tag-make tag
+;;                                                         :inverse t
+;;                                                         :beg 7 :end -1
+;;                                                         :crop-right t))))
+;;         ("\\[cite:@[A-Za-z]+:\\([0-9]+\\]\\)" . ((lambda (tag)
+;;                                                 (svg-tag-make tag
+;;                                                               :end -1
+;;                                                               :crop-left t))))
+;;
+;;
+;;         ;; Active date (without day name, with or without time)
+;;         (,(format "\\(<%s>\\)" date-re) .
+;;          ((lambda (tag)
+;;             (svg-tag-make tag :beg 1 :end -1 :margin 0))))
+;;         (,(format "\\(<%s *\\)%s>" date-re time-re) .
+;;          ((lambda (tag)
+;;             (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0))))
+;;         (,(format "<%s *\\(%s>\\)" date-re time-re) .
+;;          ((lambda (tag)
+;;             (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0))))
+;;
+;;         ;; Inactive date  (without day name, with or without time)
+;;          (,(format "\\(\\[%s\\]\\)" date-re) .
+;;           ((lambda (tag)
+;;              (svg-tag-make tag :beg 1 :end -1 :margin 0 :face 'org-date))))
+;;          (,(format "\\(\\[%s *\\)%s\\]" date-re time-re) .
+;;           ((lambda (tag)
+;;              (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0 :face 'org-date))))
+;;          (,(format "\\[%s *\\(%s\\]\\)" date-re time-re) .
+;;           ((lambda (tag)
+;;              (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'org-date))))))
+;;
+;; (svg-tag-mode t)
 
 ;; To do:         TODO DONE
 ;; Tags:          :TAG1:TAG2:TAG3:
@@ -563,43 +564,51 @@
 ;; String replacer:1 ends here
 
 ;; [[file:config.org::*ESS (Emacs speaks statistics)][ESS (Emacs speaks statistics):1]]
-(use-package ess
-  :ensure t
-)
+;; (use-package ess
+  ;; :ensure t
+;; )
 ;; ESS (Emacs speaks statistics):1 ends here
 
+;; [[file:config.org::*ASDF][ASDF:1]]
+; make it work nicely with asdf.el
+(add-to-list 'load-path "/Users/francorivera/.doom.d/packages/")
+(require 'asdf)
+
+(asdf-enable)
+;; ASDF:1 ends here
+
 ;; [[file:config.org::*Flutter][Flutter:1]]
-(map! :leader
-      :desc "Hot reload"
-      "r" #'flutter-hot-reload)
+; (map! :leader
+;       :desc "Hot reload"
+;       "r" #'flutter-hot-reload)
+;
+; (defun hot-reload-flutter ()
+;   "send Hot reload to flutter mode"
+;   (when (eq major-mode 'dart-mode)
+;     ; run default
+;     (flutter-run-or-hot-reload)
+;     ; run web (this sadly does not work )
+;     ; (flutter-run-or-hot-reload)
+;     ))
 
-(defun hot-reload-flutter ()
-  "send Hot reload to flutter mode"
-  (when (eq major-mode 'dart-mode)
-    ; run default
-    (flutter-run-or-hot-reload)
-    ; run web (this sadly does not work )
-    ; (flutter-run-or-hot-reload)
-    ))
+; (add-hook 'after-save-hook #'hot-reload-flutter)
 
-(add-hook 'after-save-hook #'hot-reload-flutter)
+; (setq lsp-dart-sdk-dir "/opt/homebrew/Caskroom/flutter/2.8.1/flutter/bin/cache/dart-sdk/")
 
-(setq lsp-dart-sdk-dir "/opt/homebrew/Caskroom/flutter/2.8.1/flutter/bin/cache/dart-sdk/")
-
-(use-package! lsp-mode)
-(use-package! lsp-dart
-  :hook (dart-mode . lsp))
+; (use-package! lsp-mode)
+; (use-package! lsp-dart
+;  :hook (dart-mode . lsp))
 ; (use-package! yasnippet :config (yas-global-mode))
 (use-package! lsp-ui)
-(use-package! hover)
+; (use-package! hover)
 
-(add-hook 'dart-mode-hook 'lsp)
+; (add-hook 'dart-mode-hook 'lsp)
 
-(setq gc-cons-threshold (* 100 1024 1024)
-      read-process-output-max (* 1024 1024)
-      company-minimum-prefix-length 1
-      lsp-lens-enable t
-      lsp-signature-auto-activate nil)
+; (setq gc-cons-threshold (* 100 1024 1024)
+      ; read-process-output-max (* 1024 1024)
+      ; company-minimum-prefix-length 1
+      ; lsp-lens-enable t
+     ; lsp-signature-auto-activate nil)
 
 ;; End of flutter
 ;; Flutter:1 ends here
@@ -609,97 +618,97 @@
 ;; Go:1 ends here
 
 ;; [[file:config.org::*Swift/SwiftUI][Swift/SwiftUI:1]]
-(defun ob-swiftui--expand-body (body params)
-  "Expand BODY according to PARAMS and PROCESSED-PARAMS, return the expanded body."
-  (let ((write-to-file (member "file" (map-elt params :result-params)))
-        (root-view (when (and (map-elt params :view)
-                              (not (string-equal (map-elt params :view) "none")))
-                     (map-elt params :view))))
-    (format
-     "
-// Swift snippet heavily based on Chris Eidhof's code at:
-// https://gist.github.com/chriseidhof/26768f0b63fa3cdf8b46821e099df5ff
-import Cocoa
-import SwiftUI
-import Foundation
-let screenshotURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(ProcessInfo.processInfo.globallyUniqueString + \".png\")
-let preview = %s
-// Body to run.
-%s
-extension NSApplication {
-  public func run<V: View>(_ view: V) {
-    let appDelegate = AppDelegate(view)
-    NSApp.setActivationPolicy(.regular)
-    mainMenu = customMenu
-    delegate = appDelegate
-    run()
-  }
-  public func run<V: View>(@ViewBuilder view: () -> V) {
-    let appDelegate = AppDelegate(view())
-    NSApp.setActivationPolicy(.regular)
-    mainMenu = customMenu
-    delegate = appDelegate
-    run()
-  }
-}
-extension NSApplication {
-  var customMenu: NSMenu {
-    let appMenu = NSMenuItem()
-    appMenu.submenu = NSMenu()
-    let quitItem = NSMenuItem(
-      title: \"Quit \(ProcessInfo.processInfo.processName)\",
-      action: #selector(NSApplication.terminate(_:)), keyEquivalent: \"q\")
-    quitItem.keyEquivalentModifierMask = []
-    appMenu.submenu?.addItem(quitItem)
-    let mainMenu = NSMenu(title: \"Main Menu\")
-    mainMenu.addItem(appMenu)
-    return mainMenu
-  }
-}
-class AppDelegate<V: View>: NSObject, NSApplicationDelegate, NSWindowDelegate {
-  var window = NSWindow(
-    contentRect: NSRect(x: 0, y: 0, width: 1214 * 0.2, height: 1296 * 0.2),
-    styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
-    backing: .buffered, defer: false)
-  var contentView: V
-  init(_ contentView: V) {
-    self.contentView = contentView
-  }
-  func applicationDidFinishLaunching(_ notification: Notification) {
-    window.delegate = self
-    window.center()
-    window.contentView = NSHostingView(rootView: contentView)
-    window.makeKeyAndOrderFront(nil)
-    if preview {
-      screenshot(view: window.contentView!, saveTo: screenshotURL)
-      // Write path (without newline) so org babel can parse it.
-      print(screenshotURL.path, terminator: \"\")
-      NSApplication.shared.terminate(self)
-      return
-    }
-    window.title = \"press q to exit\"
-    window.setFrameAutosaveName(\"Main Window\")
-    NSApp.activate(ignoringOtherApps: true)
-  }
-}
-func screenshot(view: NSView, saveTo fileURL: URL) {
-  let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds)!
-  view.cacheDisplay(in: view.bounds, to: rep)
-  let pngData = rep.representation(using: .png, properties: [:])
-  try! pngData?.write(to: fileURL)
-}
-// Additional view definitions.
-%s
-"
-     (if write-to-file
-         "true"
-       "false")
-     (if root-view
-         (format "NSApplication.shared.run(%s())" root-view)
-       (format "NSApplication.shared.run {%s}" body))
-     (if root-view
-         body
-       ""))))
+;; (defun ob-swiftui--expand-body (body params)
+;;   "Expand BODY according to PARAMS and PROCESSED-PARAMS, return the expanded body."
+;;   (let ((write-to-file (member "file" (map-elt params :result-params)))
+;;         (root-view (when (and (map-elt params :view)
+;;                               (not (string-equal (map-elt params :view) "none")))
+;;                      (map-elt params :view))))
+;;     (format
+;;      "
+;; // Swift snippet heavily based on Chris Eidhof's code at:
+;; // https://gist.github.com/chriseidhof/26768f0b63fa3cdf8b46821e099df5ff
+;; import Cocoa
+;; import SwiftUI
+;; import Foundation
+;; let screenshotURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(ProcessInfo.processInfo.globallyUniqueString + \".png\")
+;; let preview = %s
+;; // Body to run.
+;; %s
+;; extension NSApplication {
+;;   public func run<V: View>(_ view: V) {
+;;     let appDelegate = AppDelegate(view)
+;;     NSApp.setActivationPolicy(.regular)
+;;     mainMenu = customMenu
+;;     delegate = appDelegate
+;;     run()
+;;   }
+;;   public func run<V: View>(@ViewBuilder view: () -> V) {
+;;     let appDelegate = AppDelegate(view())
+;;     NSApp.setActivationPolicy(.regular)
+;;     mainMenu = customMenu
+;;     delegate = appDelegate
+;;     run()
+;;   }
+;; }
+;; extension NSApplication {
+;;   var customMenu: NSMenu {
+;;     let appMenu = NSMenuItem()
+;;     appMenu.submenu = NSMenu()
+;;     let quitItem = NSMenuItem(
+;;       title: \"Quit \(ProcessInfo.processInfo.processName)\",
+;;       action: #selector(NSApplication.terminate(_:)), keyEquivalent: \"q\")
+;;     quitItem.keyEquivalentModifierMask = []
+;;     appMenu.submenu?.addItem(quitItem)
+;;     let mainMenu = NSMenu(title: \"Main Menu\")
+;;     mainMenu.addItem(appMenu)
+;;     return mainMenu
+;;   }
+;; }
+;; class AppDelegate<V: View>: NSObject, NSApplicationDelegate, NSWindowDelegate {
+;;   var window = NSWindow(
+;;     contentRect: NSRect(x: 0, y: 0, width: 1214 * 0.2, height: 1296 * 0.2),
+;;     styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
+;;     backing: .buffered, defer: false)
+;;   var contentView: V
+;;   init(_ contentView: V) {
+;;     self.contentView = contentView
+;;   }
+;;   func applicationDidFinishLaunching(_ notification: Notification) {
+;;     window.delegate = self
+;;     window.center()
+;;     window.contentView = NSHostingView(rootView: contentView)
+;;     window.makeKeyAndOrderFront(nil)
+;;     if preview {
+;;       screenshot(view: window.contentView!, saveTo: screenshotURL)
+;;       // Write path (without newline) so org babel can parse it.
+;;       print(screenshotURL.path, terminator: \"\")
+;;       NSApplication.shared.terminate(self)
+;;       return
+;;     }
+;;     window.title = \"press q to exit\"
+;;     window.setFrameAutosaveName(\"Main Window\")
+;;     NSApp.activate(ignoringOtherApps: true)
+;;   }
+;; }
+;; func screenshot(view: NSView, saveTo fileURL: URL) {
+;;   let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds)!
+;;   view.cacheDisplay(in: view.bounds, to: rep)
+;;   let pngData = rep.representation(using: .png, properties: [:])
+;;   try! pngData?.write(to: fileURL)
+;; }
+;; // Additional view definitions.
+;; %s
+;; "
+;;      (if write-to-file
+;;          "true"
+;;        "false")
+;;      (if root-view
+;;          (format "NSApplication.shared.run(%s())" root-view)
+;;        (format "NSApplication.shared.run {%s}" body))
+;;      (if root-view
+;;          body
+;;        ""))))
 ;; Swift/SwiftUI:1 ends here
 
 ;; [[file:config.org::*Export to apple notes][Export to apple notes:1]]
