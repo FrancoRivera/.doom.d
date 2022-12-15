@@ -553,12 +553,12 @@
 ;; SVG Tag mode:1 ends here
 
 ;; [[file:config.org::*String replacer][String replacer:1]]
-(load-file "~/repos/string-replacer-mode/string-replacer-mode.el")
+;(load-file "~/repos/string-replacer-mode/string-replacer-mode.el")
 
-(setq string-replacer--meme-replace-string "⎓")
-(setq string-replacer--font-height 1.0)
-(setq string-replacer--font-width  2.2)
-(global-string-replacer-mode t)
+;(setq string-replacer--meme-replace-string "⎓")
+;(setq string-replacer--font-height 1.0)
+;(setq string-replacer--font-width  2.2)
+;(global-string-replacer-mode t)
 ; -------
 ;
 ;; String replacer:1 ends here
@@ -571,7 +571,7 @@
 
 ;; [[file:config.org::*ASDF][ASDF:1]]
 ; make it work nicely with asdf.el
-(add-to-list 'load-path "/Users/francorivera/.doom.d/packages/")
+(add-to-list 'load-path "/home/franco/.doom.d/packages/")
 (require 'asdf)
 
 (asdf-enable)
@@ -756,6 +756,75 @@
          :publishing-function org-publish-attachment
          )))
 ;; Export to apple notes:1 ends here
+
+;; [[file:config.org::*Email][Email:1]]
+(use-package mu4e
+  :ensure nil
+  :load-path "/usr/share/emacs/site-lisp/mu4e"
+  :config
+
+  ;; This is set to 't' to avoid mail syncing issues when using mbsync
+  (setq mu4e-change-filenames-when-moving t)
+
+  ;; Refresh mail using isync every 10 minutes
+  (setq mu4e-update-interval (* 10 60))
+  (setq mu4e-get-mail-command "mbsync -a")
+  (setq mu4e-maildir "~/Mail")
+
+  ;; Make sure lain text mails flow correctly for recipients
+  (setq mu4e-compose-format-flowed t)
+
+  ;; Configure the function to use for sending mail
+  (setq message-send-mail-function 'smtpmail-send-it)
+  (setq mu4e-compose-context-policy 'always-ask)
+
+  (setq mu4e-contexts
+        (list
+         ;; Work account
+         (make-mu4e-context
+          :name "WeMake"
+          :match-func
+            (lambda (msg)
+              (when msg
+                (string-prefix-p "/zoho" (mu4e-message-field msg :maildir))))
+          :vars '((user-mail-address . "franco@wemake.pe")
+                  (user-full-name    . "Franco")
+                  (mu4e-compose-signature . "- Franco \nWeMake")
+                  (smtpmail-smtp-server . "smtppro.zoho.com")
+                  (smtpmail-smtp-service . 465)
+                  (smtpmail-stream-type . ssl)
+                  (mu4e-drafts-folder  . "/zoho/Drafts")
+                  (mu4e-sent-folder  . "/zoho/Sent")
+                  (mu4e-refile-folder  . "/zoho/Archive")
+                  (mu4e-trash-folder  . "/zoho/Trash")))
+
+         ;; UPC account
+         (make-mu4e-context
+          :name "UPC"
+          :match-func
+            (lambda (msg)
+              (when msg
+                (string-prefix-p "/UPC" (mu4e-message-field msg :maildir))))
+          :vars '((user-mail-address . "u201516133@upc.edu.pe")
+                  (user-full-name    . "Franco")
+                  (mu4e-compose-signature . "- Franco")
+                  (smtpmail-smtp-server . "smtp.office365.com")
+                  (smtpmail-smtp-service . 587)
+                  (smtpmail-stream-type . starttls)
+                  (mu4e-drafts-folder  . "/UPC/Drafts")
+                  (mu4e-sent-folder  . "/UPC/Sent Items")
+                  (mu4e-refile-folder  . "/UPC/Archive")
+                  (mu4e-trash-folder  . "/UPC/Trash")))))
+
+  (setq mu4e-maildir-shortcuts
+    '((:maildir "/zoho/Inbox"    :key ?i)
+      (:maildir "/zoho/Sent" :key ?s)
+      (:maildir "/zoho/Trash"     :key ?t)
+      (:maildir "/zoho/Drafts"    :key ?d)
+      (:maildir "/zoho/Notification"    :key ?n)
+      (:maildir "/zoho/Archive"  :key ?a)
+      (:maildir "/UPC/Inbox"  :key ?u))))
+;; Email:1 ends here
 
 ;; [[file:config.org::*Other/Not used][Other/Not used:1]]
     ; (magit-log-margin-width)

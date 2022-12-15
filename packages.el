@@ -93,3 +93,7 @@
 
 (package! ascii-art-to-unicode)
 
+; disable mu4e email alert
+
+(package! org-msg)
+(package! mu4e-alert)
