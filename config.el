@@ -6,8 +6,8 @@
 ;; Identification:1 ends here
 
 ;; [[file:config.org::*Font][Font:1]]
-(setq doom-font (font-spec :family "Iosevka SS01" :size 14 :weight 'regular)
-       doom-variable-pitch-font (font-spec :family "Inconsolata" :size 14))
+(setq doom-font (font-spec :family "Iosevka SS01" :size 16 :weight 'regular)
+       doom-variable-pitch-font (font-spec :family "Inconsolata" :size 16))
 
 ; Run after changing: SPACE h r f
 
@@ -308,6 +308,11 @@
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
       :unnarrowed t)
 
+     ("q" "quotes" plain
+      (file "~/roam/Templates/quotes.org")
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+      :unnarrowed t)
+
      ("s" "Software" plain
       (file "~/roam/Templates/SoftwareTemplate.org")
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n #+filetags: :software: \n")
@@ -331,19 +336,19 @@
   (org-roam-setup)
   )
 
-(after! org-roam
-  (setq org-roam-mode-section-functions
-      (list #'org-roam-backlinks-section
-            #'org-roam-reflinks-section
-            #'org-roam-unlinked-references-section)))
-
-;; Bind this to C-c n I
-(defun org-roam-node-insert-immediate (arg &rest args)
-  (interactive "P")
-  (let ((args (cons arg args))
-        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
-                                                  '(:immediate-finish t)))))
-    (apply #'org-roam-node-insert args)))
+;; (after! org-roam
+;;   (setq org-roam-mode-section-functions
+;;       (list #'org-roam-backlinks-section
+;;             #'org-roam-reflinks-section
+;;             #'org-roam-unlinked-references-section)))
+;;
+;; ;; Bind this to C-c n I
+;; (defun org-roam-node-insert-immediate (arg &rest args)
+;;   (interactive "P")
+;;   (let ((args (cons arg args))
+;;         (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+;;                                                   '(:immediate-finish t)))))
+;;     (apply #'org-roam-node-insert args)))
 ;; Org Roam:1 ends here
 
 ;; [[file:config.org::*Org Tree Slide (Presentations)][Org Tree Slide (Presentations):1]]
@@ -774,10 +779,11 @@
   ;; Make sure lain text mails flow correctly for recipients
   (setq mu4e-compose-format-flowed t)
 
-  ;; Configure the function to use for sending mail
+  ;; Configurmusicae the function to use for sending mail
   (setq message-send-mail-function 'smtpmail-send-it)
   (setq mu4e-compose-context-policy 'always-ask)
 
+      (add-to-list 'mu4e-bookmarks '("m:/UPC/Inbox or m:/Gmail/Inbox or m:/zoho/Inbox" "Todos los Inboxes" ?i))
   (setq mu4e-contexts
         (list
          ;; Work account
@@ -824,6 +830,18 @@
       (:maildir "/zoho/Notification"    :key ?n)
       (:maildir "/zoho/Archive"  :key ?a)
       (:maildir "/UPC/Inbox"  :key ?u))))
+
+
+;; Choose the style you prefer for desktop notifications
+;; If you are on Linux you can use
+;; 1. notifications - Emacs lisp implementation of the Desktop Notifications API
+;; 2. libnotify     - Notifications using the `notify-send' program, requires `notify-send' to be in PATH
+;;
+;; On Mac OSX you can set style to
+;; 1. notifier      - Notifications using the `terminal-notifier' program, requires `terminal-notifier' to be in PATH
+;; 1. growl         - Notifications using the `growl' program, requires `growlnotify' to be in PATH
+(mu4e-alert-set-default-style 'libnotify)
+(add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
 ;; Email:1 ends here
 
 ;; [[file:config.org::*Other/Not used][Other/Not used:1]]
@@ -892,3 +910,4 @@
       :desc "Beautiful boxes"
       "c b" #'aa2u)
 ;; Beautiful box comments:1 ends here
+;;
