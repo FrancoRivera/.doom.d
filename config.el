@@ -79,18 +79,10 @@
 ;; [[file:config.org::*General Org Mode][General Org Mode:1]]
 [[attachment:_20221030_103320config.el]]
 (setq org-directory "~/org/")
-(setq org-agenda-files "~/org/agenda.org")
 
-(after! org
-  (setq org-agenda-start-day "-5d")
-  (setq org-agenda-span 10)
-  (setq org-todo-keywords '((sequence "TODO(t)" "PROJ(p)" "EXERCISE(e)" "|" "DONE(d)" "CANCELLED(c)")))
-
-  (add-to-list 'org-src-lang-modes '("swiftui" . swift)) ; Syntax highlighting Swift UI
-  )
-
-(setq org-title-palette '("#ef476f" "#ffd166" "#06d6a0" "#118ab2" "#073b4c"))
-                                        ;(setq org-title-palette '("#264653" "#2a9d8f" "#f4a261" "#e76f51" "#264653"))
+(setq org-title-palette '("#073b4c" "#094e64" "#0b617d" "#0e7597" "#118ab2"))
+; (setq org-title-palette '("#ef476f" "#118ab2" "#06d6a0" "#073b4c" "#ffd166"))
+;(setq org-title-palette '("#264653" "#2a9d8f" "#f4a261" "#e76f51" "#264653"))
 (when window-system
 (let* ((variable-tuple
         (cond ((x-list-fonts "Inconsolata")       '(:font "Inconsolata"))
@@ -227,6 +219,8 @@
          (setq org-ellipsis "↴");; ⤵ ≫
 ;;   )
 
+  ; (add-to-list 'org-src-lang-modes '("swiftui" . swift)) ; Syntax highlighting Swift UI
+
 (map! :leader
       :desc "Remove results"
       "c c" #'org-babel-remove-result-one-or-many)
@@ -253,13 +247,40 @@
 ;; ORG Roam/UI:1 ends here
 
 ;; [[file:config.org::*Org Agenda][Org Agenda:1]]
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-agenda-files
-   '("/Users/francorivera/org/agenda.org" "/Users/francorivera/org/journal.org" "/Users/francorivera/org/notes.org" "/Users/francorivera/org/notion-articles-ts.org" "/Users/francorivera/org/notion-articles-ts2.org" "/Users/francorivera/org/notion-articles.org")))
+(after! org
+  (setq org-agenda-start-day "-2d")
+  (setq org-agenda-span 10)
+  (setq org-agenda-restore-windows-after-quit t)
+  ; otherwise agenda kills the buffere where it was invoked, annoying asf
+  (setq org-todo-keywords '((sequence
+                             "TODO(t)" "PROJ(p)" "EXERCISE(e)" "|"
+                             "DONE(d)" "CANCELLED(c)")
+                            ))
+
+  )
+
+(setq org-agenda-files
+   '(
+     "/home/franco/org/tasks.org"
+     "/home/franco/org/birthdays.org"
+     "/home/franco/org/habits.org"
+     )
+   )
+
+(setq org-agenda-start-with-log-mode t)
+(setq org-log-done 'time)
+(setq org-log-into-drawer t)
+
+(setq org-tag-alist
+    '((:startgroup)
+      ; Put mutually exclusive tags here
+      (:endgroup)
+      ("wm" . ?w)
+      ("idea" . ?i)))
+
+(require 'org-habit)
+(add-to-list 'org-modules 'org-habit)
+(setq org-habit-graph-column 60)
 ;; Org Agenda:1 ends here
 
 ;; [[file:config.org::*Org Roam][Org Roam:1]]
@@ -439,15 +460,15 @@
 
 ;; (setq org-pandoc-options-for-latex '((template . "/Users/francorivera/repos/12-handbook/src/template.tex")))
 (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
-                                         (template . "/Users/francorivera/repos/latex/eisvogel.tex")))
+                                         (template . "/home/franco/roam/latex/eisvogel.tex")))
 (defun cv-pdf()
   (interactive)
 (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
-                                         (template . "/Users/francorivera/repos/latex/cv.tex"))))
+                                         (template . "/home/franco/roam/latex/cv.tex"))))
 (defun eisvogel-pdf()
   (interactive)
 (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
-                                         (template . "/Users/francorivera/repos/latex/eisvogel.tex"))))
+                                         (template . "/home/franco/roam/latex/eisvogel.tex"))))
 (map! :leader
       (:prefix ("d" . "exports")
       :desc "Set pdf to CV"
@@ -770,6 +791,7 @@
 
   ;; This is set to 't' to avoid mail syncing issues when using mbsync
   (setq mu4e-change-filenames-when-moving t)
+  (setq auth-info t)
 
   ;; Refresh mail using isync every 10 minutes
   (setq mu4e-update-interval (* 10 60))
@@ -779,9 +801,9 @@
   ;; Make sure lain text mails flow correctly for recipients
   (setq mu4e-compose-format-flowed t)
 
-  ;; Configurmusicae the function to use for sending mail
+  ;; Configure the function to use for sending mail
   (setq message-send-mail-function 'smtpmail-send-it)
-  (setq mu4e-compose-context-policy 'always-ask)
+  (setq mu4e-compose-context-policy 'ask-if-none)
 
       (add-to-list 'mu4e-bookmarks '("m:/UPC/Inbox or m:/Gmail/Inbox or m:/zoho/Inbox" "Todos los Inboxes" ?i))
   (setq mu4e-contexts
@@ -820,7 +842,25 @@
                   (mu4e-drafts-folder  . "/UPC/Drafts")
                   (mu4e-sent-folder  . "/UPC/Sent Items")
                   (mu4e-refile-folder  . "/UPC/Archive")
-                  (mu4e-trash-folder  . "/UPC/Trash")))))
+                  (mu4e-trash-folder  . "/UPC/Trash")))
+
+         ;; Gmail account
+         (make-mu4e-context
+          :name "Gmail"
+          :match-func
+            (lambda (msg)
+              (when msg
+                (string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
+          :vars '((user-mail-address . "franco654@gmail.com")
+                  (user-full-name    . "Franco")
+                  (mu4e-compose-signature . "- Franco")
+                  (smtpmail-smtp-server . "smtp.gmail.com")
+                  (smtpmail-smtp-service . 587)
+                  (smtpmail-stream-type . starttls)
+                  (mu4e-drafts-folder  . "/Gmail/[Gmail]/Borradores")
+                  (mu4e-sent-folder  . "/Gmail/[Gmail]/Enviados")
+                  ; (mu4e-refile-folder  . "/Gmail/Archive")
+                  (mu4e-trash-folder  . "/Gmail/[Gmail]/Papelera")))))
 
   (setq mu4e-maildir-shortcuts
     '((:maildir "/zoho/Inbox"    :key ?i)
@@ -843,6 +883,28 @@
 (mu4e-alert-set-default-style 'libnotify)
 (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
 ;; Email:1 ends here
+
+;; [[file:config.org::*Beancount][Beancount:1]]
+(setq lsp-beancount-langserver-executable "beancount-language-server")
+(add-hook 'beancount-mode-hook #'outline-hide-other)
+;; Beancount:1 ends here
+
+;; [[file:config.org::*Utility functions][Utility functions:1]]
+(defun p (val)
+  "Insert VAL into buffer at point"
+(insert (format "\n\n%s" val)))
+; Example use
+; (p (* (* (+ 425 1000 1850 170) 1.18) 0.30))
+
+(defun open-in-thunar ()
+    "Open in thunar the current buffer's directory"
+    (interactive)
+   (start-process "directory" "thunar" "thunar"))
+
+(map! :leader
+      :desc "Open current dir in thunar"
+      "o o" #'open-in-thunar)
+;; Utility functions:1 ends here
 
 ;; [[file:config.org::*Other/Not used][Other/Not used:1]]
     ; (magit-log-margin-width)
@@ -910,4 +972,3 @@
       :desc "Beautiful boxes"
       "c b" #'aa2u)
 ;; Beautiful box comments:1 ends here
-;;
