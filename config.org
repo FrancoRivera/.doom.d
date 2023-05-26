@@ -26,6 +26,7 @@ After _changing anything_, go to the Title and do =C-c C-c= to refresh the local
   - [[#ess-emacs-speaks-statistics][ESS (Emacs speaks statistics)]]
   - [[#asdf][ASDF]]
 - [[#language-configs][Language-configs]]
+  - [[#lsp][LSP]]
   - [[#flutter][Flutter]]
   - [[#go][Go]]
   - [[#swiftswiftui][Swift/SwiftUI]]
@@ -372,6 +373,34 @@ CLOCK: [2023-01-09 lun 12:30]--[2023-01-09 lun 12:55] =>  0:25
 (add-to-list 'org-modules 'org-habit)
 (setq org-habit-graph-column 60)
 
+
+; Add custom mapping to "SPC A"
+(map! :leader
+      :desc "Agenda shortcut"
+      "A" #'org-agenda-list)
+
+;; (defvar neo-global--window nil)
+;; (window-buffer "")
+
+;; (defun neo-global--window-exists-p ()
+;;   "Return non-nil if neotree window exists."
+;;   (and (not (null (window-buffer neo-global--window)))
+;;        (eql (window-buffer neo-global--window) (neo-global--get-buffer))))
+
+;; (defun neo-default-display-fn (buffer _alist)
+;;   "Display BUFFER to the left or right of the root window.
+;; The side is decided according to `neo-window-position'.
+;; The root window is the root window of the selected frame.
+;; _ALIST is ignored."
+;;   (let ((window-pos (if (eq neo-window-position 'left) 'left 'right)))
+;;     (display-buffer-in-side-window buffer `((side . ,window-pos)))))
+
+;; (defun neo-global--select-window ()
+;;   "Select the NeoTree window."
+;;   (interactive)
+;;   (let ((window (neo-global--get-window t)))
+;;     (select-window window)))
+
 #+end_src
 
 ** Org Roam
@@ -565,7 +594,7 @@ Hide mode line is something to emulate a presentation
 (defun cv-pdf()
   (interactive)
 (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
-                                         (template . "/home/franco/roam/latex/cv.tex"))))
+                                         (template . "/home/franco/Sync/latex/cv.tex"))))
 (defun eisvogel-pdf()
   (interactive)
 (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
@@ -709,6 +738,25 @@ Hide mode line is something to emulate a presentation
 (asdf-enable)
  #+end_src
 * Language-configs
+** LSP
+#+begin_src emacs-lisp
+(add-to-list 'lsp-file-watch-ignored-directories "/home/franco/repos/mictap-anywhere/js-demo")
+(add-to-list 'lsp-file-watch-ignored-directories "/home/franco/repos/mictap-anywhere/tmp")
+(add-to-list 'lsp-file-watch-ignored-directories "/home/franco/repos/mictap-anywhere/storage")
+(add-to-list 'lsp-file-watch-ignored-directories "/home/franco/repos/ciberleo/vendor")
+(setq lsp-eslint-auto-fix-on-save t)
+(setq lsp-ui-doc-show-with-cursor t)
+(setq lsp-ui-doc-delay 0.2)
+(setq lsp-ui-doc-position 'top)
+(setq lsp-ui-doc-max-height 20)
+(setq lsp-ui-doc-max-height 50)
+(setq lsp-ui-doc-enhanced-markdown nil)
+(setq lsp-completion-default-behaviour :insert)
+#+end_src
+
+#+RESULTS:
+: :insert
+
 ** Flutter
 
 #+begin_src emacs-lisp
@@ -1029,6 +1077,26 @@ Taken from
 #+end_src
 
 
+* ChatGPT
+#+begin_src emacs-lisp
+(use-package! chatgpt
+  :defer t
+  :config
+  (unless (boundp 'python-interpreter)
+    (defvaralias 'python-interpreter 'python-shell-interpreter))
+  (setq chatgpt-repo-path (expand-file-name "straight/repos/ChatGPT.el/" doom-local-dir))
+  (set-popup-rule! (regexp-quote "*ChatGPT*")
+    :side 'bottom :size .5 :ttl nil :quit t :modeline nil)
+  :bind ("C-c q" . chatgpt-query))
+(setq chatgpt-query-format-string-map '(
+                                        ;; ChatGPT.el defaults
+                                        ("doc" . "Please write the documentation for the following function.\n\n%s")
+                                        ("bug" . "There is a bug in the following function, please help me fix it.\n\n%s")
+                                        ("understand" . "What does the following function do?\n\n%s")
+                                        ("improve" . "Please improve the following code.\n\n%s")
+                                        ;; your new prompt
+                                        ("my-custom-type" . "My custom prompt.\n\n%s")))
+#+end_src
 * Other/Not used
     #+begin_src emacs-lisp
     ; (magit-log-margin-width)

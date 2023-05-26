@@ -98,10 +98,10 @@
 (package! org-msg)
 (package! mu4e-alert)
 
-;; (package! mu4e-dashboard
-;;   :recipe (:host github :repo "rougier/mu4e-dashboard"
-;;           :files ("mu4e-dashboard.el")))
-
+; (package! mu4e-dashboard
+;   :recipe (:host github :repo "rougier/mu4e-dashboard"
+;            :files ("mu4e-dashboard.el")))
+; 
 ;(package! another-package
 ;  :recipe (:host github :repo "username/repo"))
 
@@ -115,3 +115,4 @@
 ; https://github.com/John-Goff/flycheck-beancount
 (package! flycheck-beancount
   :recipe (:host github :repo "John-Goff/flycheck-beancount"))
+
