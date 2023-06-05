@@ -40,6 +40,7 @@ After _changing anything_, go to the Title and do =C-c C-c= to refresh the local
   - [[#yasnippet-not-used][Yasnippet (Not used)]]
   - [[#javascript][Javascript]]
   - [[#beautiful-box-comments][Beautiful box comments]]
+- [[#temporal-workspace-improvements][Temporal Workspace improvements]]
 
 * Identification
 Place your private configuration here! Remember, you do not need to run 'doom
@@ -418,14 +419,14 @@ CLOCK: [2023-01-09 lun 12:30]--[2023-01-09 lun 12:55] =>  0:25
   (org-roam-dailies-capture-templates
    '(
      ("d" "default" entry "* %<%I:%M %p>: %?"
-       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))
+       :if-new (file+head "%<%Y-%m-%d>.org" "%<%Y-%m-%d>\n"))
      ("h" "Hckr news reading" entry
       (file "~/roam/Templates/HN.org")
-       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+       :if-new (file+head "%<%Y-%m-%d>.org" "%<%Y-%m-%d>\n"))))
   (org-roam-capture-templates
    '(("d" "default" plain
       "%?"
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n") :unnarrowed t)
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "${title}\n#+date: %U\n") :unnarrowed t)
 
      ;; Example used to illustrate how to create a template
      ("l" ; letter to be used for capture template
@@ -494,7 +495,6 @@ CLOCK: [2023-01-09 lun 12:30]--[2023-01-09 lun 12:55] =>  0:25
 
 
 #+end_src
-
 
 ** Org Tree Slide (Presentations)
 Hide mode line is something to emulate a presentation
@@ -1072,8 +1072,6 @@ Taken from
 (map! :leader
       :desc "Open current dir in thunar"
       "o o" #'open-in-thunar)
-
-
 #+end_src
 
 
@@ -1170,4 +1168,18 @@ Taken from
 (map! :leader
       :desc "Beautiful boxes"
       "c b" #'aa2u)
+#+end_src
+
+
+* Temporal Workspace improvements
+#+begin_src emacs-lisp
+(map! :leader
+      :desc "Switch to Email"
+      "TAB m" #'+workspace/switch-to-final)
+(map! :leader
+      :desc "Switch back"
+      "TAB SPC" #'+workspace/other)
+(map! :leader
+      :desc "Display Tab"
+      "TAB TAB" #'+workspace/display)
 #+end_src

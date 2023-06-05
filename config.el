@@ -281,6 +281,34 @@
 (require 'org-habit)
 (add-to-list 'org-modules 'org-habit)
 (setq org-habit-graph-column 60)
+
+
+; Add custom mapping to "SPC A"
+(map! :leader
+      :desc "Agenda shortcut"
+      "A" #'org-agenda-list)
+
+;; (defvar neo-global--window nil)
+;; (window-buffer "")
+
+;; (defun neo-global--window-exists-p ()
+;;   "Return non-nil if neotree window exists."
+;;   (and (not (null (window-buffer neo-global--window)))
+;;        (eql (window-buffer neo-global--window) (neo-global--get-buffer))))
+
+;; (defun neo-default-display-fn (buffer _alist)
+;;   "Display BUFFER to the left or right of the root window.
+;; The side is decided according to `neo-window-position'.
+;; The root window is the root window of the selected frame.
+;; _ALIST is ignored."
+;;   (let ((window-pos (if (eq neo-window-position 'left) 'left 'right)))
+;;     (display-buffer-in-side-window buffer `((side . ,window-pos)))))
+
+;; (defun neo-global--select-window ()
+;;   "Select the NeoTree window."
+;;   (interactive)
+;;   (let ((window (neo-global--get-window t)))
+;;     (select-window window)))
 ;; Org Agenda:1 ends here
 
 ;; [[file:config.org::*Org Roam][Org Roam:1]]
@@ -464,7 +492,7 @@
 (defun cv-pdf()
   (interactive)
 (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
-                                         (template . "/home/franco/roam/latex/cv.tex"))))
+                                         (template . "/home/franco/Sync/latex/cv.tex"))))
 (defun eisvogel-pdf()
   (interactive)
 (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
@@ -602,6 +630,22 @@
 
 (asdf-enable)
 ;; ASDF:1 ends here
+
+;; [[file:config.org::*LSP][LSP:1]]
+(after! lsp-ui
+(add-to-list 'lsp-file-watch-ignored-directories "/home/franco/repos/mictap-anywhere/js-demo")
+(add-to-list 'lsp-file-watch-ignored-directories "/home/franco/repos/mictap-anywhere/tmp")
+(add-to-list 'lsp-file-watch-ignored-directories "/home/franco/repos/mictap-anywhere/storage")
+(add-to-list 'lsp-file-watch-ignored-directories "/home/franco/repos/ciberleo/vendor")
+(setq lsp-eslint-auto-fix-on-save t)
+(setq lsp-ui-doc-show-with-cursor t)
+(setq lsp-ui-doc-delay 0.2)
+(setq lsp-ui-doc-position 'top)
+(setq lsp-ui-doc-max-height 20)
+(setq lsp-ui-doc-max-height 50)
+(setq lsp-ui-doc-enhanced-markdown nil)
+(setq lsp-completion-default-behaviour :insert))
+;; LSP:1 ends here
 
 ;; [[file:config.org::*Flutter][Flutter:1]]
 ; (map! :leader
