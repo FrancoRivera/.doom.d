@@ -325,14 +325,14 @@
   (org-roam-dailies-capture-templates
    '(
      ("d" "default" entry "* %<%I:%M %p>: %?"
-       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))
+       :if-new (file+head "%<%Y-%m-%d>.org" "%<%Y-%m-%d>\n"))
      ("h" "Hckr news reading" entry
       (file "~/roam/Templates/HN.org")
-       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+       :if-new (file+head "%<%Y-%m-%d>.org" "%<%Y-%m-%d>\n"))))
   (org-roam-capture-templates
    '(("d" "default" plain
       "%?"
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n") :unnarrowed t)
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "${title}\n#+date: %U\n") :unnarrowed t)
 
      ;; Example used to illustrate how to create a template
      ("l" ; letter to be used for capture template
@@ -1016,3 +1016,15 @@
       :desc "Beautiful boxes"
       "c b" #'aa2u)
 ;; Beautiful box comments:1 ends here
+
+;; [[file:config.org::*Temporal Workspace improvements][Temporal Workspace improvements:1]]
+(map! :leader
+      :desc "Switch to Email"
+      "TAB m" #'+workspace/switch-to-final)
+(map! :leader
+      :desc "Switch back"
+      "TAB SPC" #'+workspace/other)
+(map! :leader
+      :desc "Display Tab"
+      "TAB TAB" #'+workspace/display)
+;; Temporal Workspace improvements:1 ends here
