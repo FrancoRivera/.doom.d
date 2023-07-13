@@ -116,3 +116,9 @@
 (package! flycheck-beancount
   :recipe (:host github :repo "John-Goff/flycheck-beancount"))
 
+;; temp fix for mu4e and vim
+(unpin! evil-collection)
+(package! evil-collection
+  :recipe (:repo "emacs-evil/evil-collection" :branch "master"))
+
+

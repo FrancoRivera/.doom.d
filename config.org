@@ -340,16 +340,13 @@ CLOCK: [2023-01-09 lun 12:30]--[2023-01-09 lun 12:55] =>  0:25
 :END:
 #+begin_src emacs-lisp
 (after! org
-  (setq org-agenda-start-day "-2d")
-  (setq org-agenda-span 10)
+  (setq org-agenda-start-day "-5d")
+  (setq org-agenda-span 25)
   (setq org-agenda-restore-windows-after-quit t)
   ; otherwise agenda kills the buffere where it was invoked, annoying asf
   (setq org-todo-keywords '((sequence
-                             "TODO(t)" "PROJ(p)" "EXERCISE(e)" "|"
-                             "DONE(d)" "CANCELLED(c)")
-                            ))
-
-  )
+                             "TODO(t)" "PROJ(p)" "EXERCISE(e)"
+                             "|" "DONE(d)" "CANCELLED(c)"))))
 
 (setq org-agenda-files
    '(
