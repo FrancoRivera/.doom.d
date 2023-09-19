@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: yesterday entry
+# key: bcy
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
+# condition: t
+# type: snippet
+# binding: direct-keybinding
+# --
+`(format-time-string "%Y-%m-%d" (time-subtract (current-time) (days-to-time 1)))` * "${1:Description}"
+  ${2:Account$$(yas-choose-value
+        (sort (beancount-collect beancount-account-regexp 0) #'string<)
+  )}    ${3:MONTO} ${4:CUR$(yas-choose-value '("PEN" "EUR" "USD"))}
+  ${5:Account$$(yas-choose-value
+        (sort (beancount-collect beancount-account-regexp 0) #'string<)
+  )}   -$3 $4

@@ -6,8 +6,12 @@
 ;; Identification:1 ends here
 
 ;; [[file:config.org::*Font][Font:1]]
-(setq doom-font (font-spec :family "Iosevka SS01" :size 14 :weight 'regular)
-       doom-variable-pitch-font (font-spec :family "Inconsolata" :size 14))
+;; (setq doom-font (font-spec :family "Iosevka SS01" :size 16 :weight 'regular)
+;;        doom-variable-pitch-font (font-spec :family "Inconsolata" :size 16))
+
+(setq doom-font (font-spec :family "CommitMono" :size 16 :weight 'regular)
+       doom-variable-pitch-font (font-spec :family "Hack Nerd Font" :size 16))
+
 
 ; Run after changing: SPACE h r f
 
@@ -79,18 +83,10 @@
 ;; [[file:config.org::*General Org Mode][General Org Mode:1]]
 [[attachment:_20221030_103320config.el]]
 (setq org-directory "~/org/")
-(setq org-agenda-files "~/org/agenda.org")
 
-(after! org
-  (setq org-agenda-start-day "-5d")
-  (setq org-agenda-span 10)
-  (setq org-todo-keywords '((sequence "TODO(t)" "PROJ(p)" "EXERCISE(e)" "|" "DONE(d)" "CANCELLED(c)")))
-
-  (add-to-list 'org-src-lang-modes '("swiftui" . swift)) ; Syntax highlighting Swift UI
-  )
-
-(setq org-title-palette '("#ef476f" "#ffd166" "#06d6a0" "#118ab2" "#073b4c"))
-                                        ;(setq org-title-palette '("#264653" "#2a9d8f" "#f4a261" "#e76f51" "#264653"))
+(setq org-title-palette '("#073b4c" "#094e64" "#0b617d" "#0e7597" "#118ab2"))
+; (setq org-title-palette '("#ef476f" "#118ab2" "#06d6a0" "#073b4c" "#ffd166"))
+;(setq org-title-palette '("#264653" "#2a9d8f" "#f4a261" "#e76f51" "#264653"))
 (when window-system
 (let* ((variable-tuple
         (cond ((x-list-fonts "Inconsolata")       '(:font "Inconsolata"))
@@ -145,7 +141,7 @@
   (setq line-spacing 4)
   )
 (add-hook 'org-mode-hook 'set-line-spacing)
-(setq frame-title-format "This would be the title of the bar")
+(setq frame-title-format "Mememacs: TitleBar TitleBar")
                                         ;(menu-bar-mode 1)
 (tool-bar-mode -1)
 
@@ -227,6 +223,8 @@
          (setq org-ellipsis "↴");; ⤵ ≫
 ;;   )
 
+  ; (add-to-list 'org-src-lang-modes '("swiftui" . swift)) ; Syntax highlighting Swift UI
+
 (map! :leader
       :desc "Remove results"
       "c c" #'org-babel-remove-result-one-or-many)
@@ -253,13 +251,65 @@
 ;; ORG Roam/UI:1 ends here
 
 ;; [[file:config.org::*Org Agenda][Org Agenda:1]]
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-agenda-files
-   '("/Users/francorivera/org/agenda.org" "/Users/francorivera/org/journal.org" "/Users/francorivera/org/notes.org" "/Users/francorivera/org/notion-articles-ts.org" "/Users/francorivera/org/notion-articles-ts2.org" "/Users/francorivera/org/notion-articles.org")))
+(after! org
+  (setq org-agenda-start-day "-5d")
+  (setq org-agenda-span 25)
+  (setq org-agenda-restore-windows-after-quit t)
+  ; otherwise agenda kills the buffere where it was invoked, annoying asf
+  (setq org-todo-keywords '((sequence
+                             "TODO(t)" "PROJ(p)" "EXERCISE(e)"
+                             "|" "DONE(d)" "CANCELLED(c)"))))
+
+(setq org-agenda-files
+   '(
+     "/home/franco/org/tasks.org"
+     "/home/franco/org/birthdays.org"
+     "/home/franco/org/habits.org"
+     )
+   )
+
+(setq org-agenda-start-with-log-mode t)
+(setq org-log-done 'time)
+(setq org-log-into-drawer t)
+
+(setq org-tag-alist
+    '((:startgroup)
+      ; Put mutually exclusive tags here
+      (:endgroup)
+      ("wm" . ?w)
+      ("idea" . ?i)))
+
+(require 'org-habit)
+(add-to-list 'org-modules 'org-habit)
+(setq org-habit-graph-column 60)
+
+
+; Add custom mapping to "SPC A"
+(map! :leader
+      :desc "Agenda shortcut"
+      "A" #'org-agenda-list)
+
+;; (defvar neo-global--window nil)
+;; (window-buffer "")
+
+;; (defun neo-global--window-exists-p ()
+;;   "Return non-nil if neotree window exists."
+;;   (and (not (null (window-buffer neo-global--window)))
+;;        (eql (window-buffer neo-global--window) (neo-global--get-buffer))))
+
+;; (defun neo-default-display-fn (buffer _alist)
+;;   "Display BUFFER to the left or right of the root window.
+;; The side is decided according to `neo-window-position'.
+;; The root window is the root window of the selected frame.
+;; _ALIST is ignored."
+;;   (let ((window-pos (if (eq neo-window-position 'left) 'left 'right)))
+;;     (display-buffer-in-side-window buffer `((side . ,window-pos)))))
+
+;; (defun neo-global--select-window ()
+;;   "Select the NeoTree window."
+;;   (interactive)
+;;   (let ((window (neo-global--get-window t)))
+;;     (select-window window)))
 ;; Org Agenda:1 ends here
 
 ;; [[file:config.org::*Org Roam][Org Roam:1]]
@@ -276,14 +326,14 @@
   (org-roam-dailies-capture-templates
    '(
      ("d" "default" entry "* %<%I:%M %p>: %?"
-       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))
+       :if-new (file+head "%<%Y-%m-%d>.org" "%<%Y-%m-%d>\n"))
      ("h" "Hckr news reading" entry
       (file "~/roam/Templates/HN.org")
        :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
   (org-roam-capture-templates
    '(("d" "default" plain
       "%?"
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n") :unnarrowed t)
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "${title}\n#+date: %U\n") :unnarrowed t)
 
      ;; Example used to illustrate how to create a template
      ("l" ; letter to be used for capture template
@@ -306,6 +356,11 @@
      ("p" "project" plain
       "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
+      :unnarrowed t)
+
+     ("q" "quotes" plain
+      (file "~/roam/Templates/quotes.org")
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
       :unnarrowed t)
 
      ("s" "Software" plain
@@ -331,19 +386,19 @@
   (org-roam-setup)
   )
 
-(after! org-roam
-  (setq org-roam-mode-section-functions
-      (list #'org-roam-backlinks-section
-            #'org-roam-reflinks-section
-            #'org-roam-unlinked-references-section)))
-
-;; Bind this to C-c n I
-(defun org-roam-node-insert-immediate (arg &rest args)
-  (interactive "P")
-  (let ((args (cons arg args))
-        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
-                                                  '(:immediate-finish t)))))
-    (apply #'org-roam-node-insert args)))
+;; (after! org-roam
+;;   (setq org-roam-mode-section-functions
+;;       (list #'org-roam-backlinks-section
+;;             #'org-roam-reflinks-section
+;;             #'org-roam-unlinked-references-section)))
+;;
+;; ;; Bind this to C-c n I
+;; (defun org-roam-node-insert-immediate (arg &rest args)
+;;   (interactive "P")
+;;   (let ((args (cons arg args))
+;;         (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+;;                                                   '(:immediate-finish t)))))
+;;     (apply #'org-roam-node-insert args)))
 ;; Org Roam:1 ends here
 
 ;; [[file:config.org::*Org Tree Slide (Presentations)][Org Tree Slide (Presentations):1]]
@@ -434,15 +489,15 @@
 
 ;; (setq org-pandoc-options-for-latex '((template . "/Users/francorivera/repos/12-handbook/src/template.tex")))
 (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
-                                         (template . "/Users/francorivera/repos/latex/eisvogel.tex")))
+                                         (template . "/home/franco/roam/latex/eisvogel.tex")))
 (defun cv-pdf()
   (interactive)
 (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
-                                         (template . "/Users/francorivera/repos/latex/cv.tex"))))
+                                         (template . "/home/franco/Sync/latex/cv.tex"))))
 (defun eisvogel-pdf()
   (interactive)
 (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")
-                                         (template . "/Users/francorivera/repos/latex/eisvogel.tex"))))
+                                         (template . "/home/franco/roam/latex/eisvogel.tex"))))
 (map! :leader
       (:prefix ("d" . "exports")
       :desc "Set pdf to CV"
@@ -553,12 +608,12 @@
 ;; SVG Tag mode:1 ends here
 
 ;; [[file:config.org::*String replacer][String replacer:1]]
-(load-file "~/repos/string-replacer-mode/string-replacer-mode.el")
+;(load-file "~/repos/string-replacer-mode/string-replacer-mode.el")
 
-(setq string-replacer--meme-replace-string "⎓")
-(setq string-replacer--font-height 1.0)
-(setq string-replacer--font-width  2.2)
-(global-string-replacer-mode t)
+;(setq string-replacer--meme-replace-string "⎓")
+;(setq string-replacer--font-height 1.0)
+;(setq string-replacer--font-width  2.2)
+;(global-string-replacer-mode t)
 ; -------
 ;
 ;; String replacer:1 ends here
@@ -571,11 +626,27 @@
 
 ;; [[file:config.org::*ASDF][ASDF:1]]
 ; make it work nicely with asdf.el
-(add-to-list 'load-path "/Users/francorivera/.doom.d/packages/")
+(add-to-list 'load-path "/home/franco/.doom.d/packages/")
 (require 'asdf)
 
 (asdf-enable)
 ;; ASDF:1 ends here
+
+;; [[file:config.org::*LSP][LSP:1]]
+(after! lsp-ui
+(add-to-list 'lsp-file-watch-ignored-directories "/home/franco/repos/mictap-anywhere/js-demo")
+(add-to-list 'lsp-file-watch-ignored-directories "/home/franco/repos/mictap-anywhere/tmp")
+(add-to-list 'lsp-file-watch-ignored-directories "/home/franco/repos/mictap-anywhere/storage")
+(add-to-list 'lsp-file-watch-ignored-directories "/home/franco/repos/ciberleo/vendor")
+(setq lsp-eslint-auto-fix-on-save t)
+(setq lsp-ui-doc-show-with-cursor t)
+(setq lsp-ui-doc-delay 0.2)
+(setq lsp-ui-doc-position 'top)
+(setq lsp-ui-doc-max-height 20)
+(setq lsp-ui-doc-max-height 50)
+(setq lsp-ui-doc-enhanced-markdown nil)
+(setq lsp-completion-default-behaviour :insert))
+;; LSP:1 ends here
 
 ;; [[file:config.org::*Flutter][Flutter:1]]
 ; (map! :leader
@@ -757,6 +828,129 @@
          )))
 ;; Export to apple notes:1 ends here
 
+;; [[file:config.org::*Email][Email:1]]
+(use-package mu4e
+  :ensure nil
+  :load-path "/usr/share/emacs/site-lisp/mu4e"
+  :config
+
+  ;; This is set to 't' to avoid mail syncing issues when using mbsync
+  (setq mu4e-change-filenames-when-moving t)
+  (setq auth-info t)
+
+  ;; Refresh mail using isync every 10 minutes
+  (setq mu4e-update-interval (* 10 60))
+  (setq mu4e-get-mail-command "mbsync -a")
+  (setq mu4e-maildir "~/Mail")
+
+  ;; Make sure lain text mails flow correctly for recipients
+  (setq mu4e-compose-format-flowed t)
+
+  ;; Configure the function to use for sending mail
+  (setq message-send-mail-function 'smtpmail-send-it)
+  (setq mu4e-compose-context-policy 'ask-if-none)
+
+      (add-to-list 'mu4e-bookmarks '("m:/UPC/Inbox or m:/Gmail/Inbox or m:/zoho/Inbox" "Todos los Inboxes" ?i))
+  (setq mu4e-contexts
+        (list
+         ;; Work account
+         (make-mu4e-context
+          :name "WeMake"
+          :match-func
+            (lambda (msg)
+              (when msg
+                (string-prefix-p "/zoho" (mu4e-message-field msg :maildir))))
+          :vars '((user-mail-address . "franco@wemake.pe")
+                  (user-full-name    . "Franco")
+                  (mu4e-compose-signature . "- Franco \nWeMake")
+                  (smtpmail-smtp-server . "smtppro.zoho.com")
+                  (smtpmail-smtp-service . 465)
+                  (smtpmail-stream-type . ssl)
+                  (mu4e-drafts-folder  . "/zoho/Drafts")
+                  (mu4e-sent-folder  . "/zoho/Sent")
+                  (mu4e-refile-folder  . "/zoho/Archive")
+                  (mu4e-trash-folder  . "/zoho/Trash")))
+
+         ;; UPC account
+         (make-mu4e-context
+          :name "UPC"
+          :match-func
+            (lambda (msg)
+              (when msg
+                (string-prefix-p "/UPC" (mu4e-message-field msg :maildir))))
+          :vars '((user-mail-address . "u201516133@upc.edu.pe")
+                  (user-full-name    . "Franco")
+                  (mu4e-compose-signature . "- Franco")
+                  (smtpmail-smtp-server . "smtp.office365.com")
+                  (smtpmail-smtp-service . 587)
+                  (smtpmail-stream-type . starttls)
+                  (mu4e-drafts-folder  . "/UPC/Drafts")
+                  (mu4e-sent-folder  . "/UPC/Sent Items")
+                  (mu4e-refile-folder  . "/UPC/Archive")
+                  (mu4e-trash-folder  . "/UPC/Trash")))
+
+         ;; Gmail account
+         (make-mu4e-context
+          :name "Gmail"
+          :match-func
+            (lambda (msg)
+              (when msg
+                (string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
+          :vars '((user-mail-address . "franco654@gmail.com")
+                  (user-full-name    . "Franco")
+                  (mu4e-compose-signature . "- Franco")
+                  (smtpmail-smtp-server . "smtp.gmail.com")
+                  (smtpmail-smtp-service . 587)
+                  (smtpmail-stream-type . starttls)
+                  (mu4e-drafts-folder  . "/Gmail/[Gmail]/Borradores")
+                  (mu4e-sent-folder  . "/Gmail/[Gmail]/Enviados")
+                  ; (mu4e-refile-folder  . "/Gmail/Archive")
+                  (mu4e-trash-folder  . "/Gmail/[Gmail]/Papelera")))))
+
+  (setq mu4e-maildir-shortcuts
+    '((:maildir "/zoho/Inbox"    :key ?i)
+      (:maildir "/zoho/Sent" :key ?s)
+      (:maildir "/zoho/Trash"     :key ?t)
+      (:maildir "/zoho/Drafts"    :key ?d)
+      (:maildir "/zoho/Notification"    :key ?n)
+      (:maildir "/zoho/Archive"  :key ?a)
+      (:maildir "/UPC/Inbox"  :key ?u))))
+
+
+;; Choose the style you prefer for desktop notifications
+;; If you are on Linux you can use
+;; 1. notifications - Emacs lisp implementation of the Desktop Notifications API
+;; 2. libnotify     - Notifications using the `notify-send' program, requires `notify-send' to be in PATH
+;;
+;; On Mac OSX you can set style to
+;; 1. notifier      - Notifications using the `terminal-notifier' program, requires `terminal-notifier' to be in PATH
+;; 1. growl         - Notifications using the `growl' program, requires `growlnotify' to be in PATH
+(mu4e-alert-set-default-style 'libnotify)
+(add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
+;; Email:1 ends here
+
+;; [[file:config.org::*Beancount][Beancount:1]]
+(setq lsp-beancount-langserver-executable "beancount-language-server")
+(add-hook 'beancount-mode-hook #'outline-hide-other)
+;; Beancount:1 ends here
+
+;; [[file:config.org::*Utility functions][Utility functions:1]]
+(defun p (val)
+  "Insert VAL into buffer at point"
+(insert (format "\n\n%s" val)))
+; Example use
+; (p (* (* (+ 425 1000 1850 170) 1.18) 0.30))
+
+(defun open-in-thunar ()
+    "Open in thunar the current buffer's directory"
+    (interactive)
+   (start-process "directory" "thunar" "thunar"))
+
+(map! :leader
+      :desc "Open current dir in thunar"
+      "o o" #'open-in-thunar)
+;; Utility functions:1 ends here
+
 ;; [[file:config.org::*Other/Not used][Other/Not used:1]]
     ; (magit-log-margin-width)
     ; (setq magit-log-margin--custom-type (t "%Y-%m-%d %H:%M " magit-log-margin-width t 18))
@@ -823,3 +1017,15 @@
       :desc "Beautiful boxes"
       "c b" #'aa2u)
 ;; Beautiful box comments:1 ends here
+
+;; [[file:config.org::*Temporal Workspace improvements][Temporal Workspace improvements:1]]
+(map! :leader
+      :desc "Switch to Email"
+      "TAB m" #'+workspace/switch-to-final)
+(map! :leader
+      :desc "Switch back"
+      "TAB SPC" #'+workspace/other)
+(map! :leader
+      :desc "Display Tab"
+      "TAB TAB" #'+workspace/display)
+;; Temporal Workspace improvements:1 ends here

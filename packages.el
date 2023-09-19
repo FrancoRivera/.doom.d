@@ -93,3 +93,32 @@
 
 (package! ascii-art-to-unicode)
 
+; disable mu4e email alert
+
+(package! org-msg)
+(package! mu4e-alert)
+
+; (package! mu4e-dashboard
+;   :recipe (:host github :repo "rougier/mu4e-dashboard"
+;            :files ("mu4e-dashboard.el")))
+; 
+;(package! another-package
+;  :recipe (:host github :repo "username/repo"))
+
+;; If the package you are trying to install does not contain a PACKAGENAME.el
+;; file, or is located in a subdirectory of the repo, you'll need to specify
+;; `:files' in the `:recipe':
+;(package! this-package
+;  :recipe (:host github :repo "username/repo"
+;           :files ("some-file.el" "src/lisp/*.el")))
+
+; https://github.com/John-Goff/flycheck-beancount
+(package! flycheck-beancount
+  :recipe (:host github :repo "John-Goff/flycheck-beancount"))
+
+;; temp fix for mu4e and vim
+(unpin! evil-collection)
+(package! evil-collection
+  :recipe (:repo "emacs-evil/evil-collection" :branch "master"))
+
+
