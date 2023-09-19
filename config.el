@@ -6,8 +6,12 @@
 ;; Identification:1 ends here
 
 ;; [[file:config.org::*Font][Font:1]]
-(setq doom-font (font-spec :family "Iosevka SS01" :size 16 :weight 'regular)
-       doom-variable-pitch-font (font-spec :family "Inconsolata" :size 16))
+;; (setq doom-font (font-spec :family "Iosevka SS01" :size 16 :weight 'regular)
+;;        doom-variable-pitch-font (font-spec :family "Inconsolata" :size 16))
+
+(setq doom-font (font-spec :family "CommitMono" :size 16 :weight 'regular)
+       doom-variable-pitch-font (font-spec :family "Hack Nerd Font" :size 16))
+
 
 ; Run after changing: SPACE h r f
 
@@ -137,7 +141,7 @@
   (setq line-spacing 4)
   )
 (add-hook 'org-mode-hook 'set-line-spacing)
-(setq frame-title-format "This would be the title of the bar")
+(setq frame-title-format "Mememacs: TitleBar TitleBar")
                                         ;(menu-bar-mode 1)
 (tool-bar-mode -1)
 
@@ -248,16 +252,13 @@
 
 ;; [[file:config.org::*Org Agenda][Org Agenda:1]]
 (after! org
-  (setq org-agenda-start-day "-2d")
-  (setq org-agenda-span 10)
+  (setq org-agenda-start-day "-5d")
+  (setq org-agenda-span 25)
   (setq org-agenda-restore-windows-after-quit t)
   ; otherwise agenda kills the buffere where it was invoked, annoying asf
   (setq org-todo-keywords '((sequence
-                             "TODO(t)" "PROJ(p)" "EXERCISE(e)" "|"
-                             "DONE(d)" "CANCELLED(c)")
-                            ))
-
-  )
+                             "TODO(t)" "PROJ(p)" "EXERCISE(e)"
+                             "|" "DONE(d)" "CANCELLED(c)"))))
 
 (setq org-agenda-files
    '(
@@ -328,7 +329,7 @@
        :if-new (file+head "%<%Y-%m-%d>.org" "%<%Y-%m-%d>\n"))
      ("h" "Hckr news reading" entry
       (file "~/roam/Templates/HN.org")
-       :if-new (file+head "%<%Y-%m-%d>.org" "%<%Y-%m-%d>\n"))))
+       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
   (org-roam-capture-templates
    '(("d" "default" plain
       "%?"

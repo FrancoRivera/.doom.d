@@ -72,8 +72,12 @@ Note: This also includes the "lexical binding", which i dont really know what it
 ;;
 
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "Iosevka SS01" :size 16 :weight 'regular)
-       doom-variable-pitch-font (font-spec :family "Inconsolata" :size 16))
+;; (setq doom-font (font-spec :family "Iosevka SS01" :size 16 :weight 'regular)
+;;        doom-variable-pitch-font (font-spec :family "Inconsolata" :size 16))
+
+(setq doom-font (font-spec :family "CommitMono" :size 16 :weight 'regular)
+       doom-variable-pitch-font (font-spec :family "Hack Nerd Font" :size 16))
+
 
 ; Run after changing: SPACE h r f
 
@@ -223,7 +227,7 @@ change `org-directory'. It must be set before org loads!
   (setq line-spacing 4)
   )
 (add-hook 'org-mode-hook 'set-line-spacing)
-(setq frame-title-format "This would be the title of the bar")
+(setq frame-title-format "Mememacs: TitleBar TitleBar")
                                         ;(menu-bar-mode 1)
 (tool-bar-mode -1)
 
@@ -419,7 +423,7 @@ CLOCK: [2023-01-09 lun 12:30]--[2023-01-09 lun 12:55] =>  0:25
        :if-new (file+head "%<%Y-%m-%d>.org" "%<%Y-%m-%d>\n"))
      ("h" "Hckr news reading" entry
       (file "~/roam/Templates/HN.org")
-       :if-new (file+head "%<%Y-%m-%d>.org" "%<%Y-%m-%d>\n"))))
+       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
   (org-roam-capture-templates
    '(("d" "default" plain
       "%?"
